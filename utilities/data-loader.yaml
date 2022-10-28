@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-loader-scratch
+  namespace: default
+  labels:
+    app: data-loader
+spec:
+  storageClassName: nvme-rook-ceph
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  data-loader
+  namespace: default
+  labels:
+    app:  data-loader
+spec:
+  selector:
+    matchLabels:
+      app: data-loader
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  data-loader
+    spec:
+      containers:
+      - name:  data-loader
+        image:  ubuntu:latest
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+          limits:
+            cpu: "4"
+            memory: 2Gi
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+        - name: data-vol
+          mountPath: /data
+        - name: scratch-vol
+          mountPath: /scratch
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/US/Pacific
+        - name: data-vol
+          persistentVolumeClaim:
+            claimName: code-server-config
+        - name: scratch-vol
+          persistentVolumeClaim:
+            claimName: data-loader-scratch
+      restartPolicy: Always

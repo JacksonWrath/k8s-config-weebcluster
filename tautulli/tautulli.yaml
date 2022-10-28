@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tautulli
+  namespace: default
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: morgiana.daleajackson.io
+spec:
+  selector:
+    app: tautulli
+  type: LoadBalancer
+  ports:
+  - name: tautulli
+    protocol: TCP
+    port: 80
+    targetPort: 8181
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  tautulli
+  namespace: default
+  labels:
+    app:  tautulli
+spec:
+  selector:
+    matchLabels:
+      app: tautulli
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app:  tautulli
+    spec:
+      containers:
+      - name:  tautulli
+        image:  tautulli/tautulli:latest
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+        ports:
+        - containerPort: 8181
+          name:  tautulli
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: localtime
+          mountPath: /etc/localtime:ro
+      volumes:
+        - name: config
+          persistentVolumeClaim: 
+            claimName: tautulli-config
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/US/Pacific
+      restartPolicy: Always

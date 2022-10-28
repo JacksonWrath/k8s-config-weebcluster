@@ -13,50 +13,66 @@ spec:
     requests:
       storage: 200Gi
 ---
-apiVersion: apps/v1
-kind: Deployment
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: data-loader-script
+  namespace: default
+data:
+  entrypoint.sh: |
+    #!/bin/bash
+    apt-get update;
+    apt-get install -y wget;
+    wget 10.69.69.14/scratch/archive.tar.gz -P /scratch;
+    tar -xzvf /scratch/archive.tar.gz -C /data;
+    echo Data directory contents:;
+    ls -lahtr /data;
+    if [[ ! -z $WAIT_ON_FINISH ]]; then while true; do sleep 30; done;
+---
+apiVersion: v1
+kind: Pod
 metadata:
   name:  data-loader
   namespace: default
-  labels:
-    app:  data-loader
 spec:
-  selector:
-    matchLabels:
-      app: data-loader
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app:  data-loader
-    spec:
-      containers:
-      - name:  data-loader
-        image:  ubuntu:latest
-        command: [ "/bin/sh", "-c", "--" ]
-        args: [ "while true; do sleep 30; done;" ]
-        resources:
-          requests:
-            cpu: "0"
-            memory: "0"
-          limits:
-            cpu: "4"
-            memory: 2Gi
-        volumeMounts:
-        - name: localtime
-          mountPath: /etc/localtime
-        - name: data-vol
-          mountPath: /data
-        - name: scratch-vol
-          mountPath: /scratch
-      volumes:
-        - name: localtime
-          hostPath:
-            path: /usr/share/zoneinfo/US/Pacific
-        - name: data-vol
-          persistentVolumeClaim:
-            claimName: code-server-config
-        - name: scratch-vol
-          persistentVolumeClaim:
-            claimName: data-loader-scratch
-      restartPolicy: Always
+  containers:
+  - name:  data-loader
+    image:  ubuntu:latest
+    command: [ "/bin/bash", "/entrypoint.sh" ]
+    env:
+    - name: WAIT_ON_FINISH
+      value: "0"
+    resources:
+      requests:
+        cpu: "0"
+        memory: "0"
+      limits:
+        cpu: "4"
+        memory: 2Gi
+    volumeMounts:
+    - name: localtime
+      mountPath: /etc/localtime
+    - name: data-vol
+      mountPath: /data
+    - name: scratch-vol
+      mountPath: /scratch
+    - name: entrypoint-sh
+      mountPath: /entrypoint.sh
+      subPath: entrypoint.sh
+  volumes:
+    - name: localtime
+      hostPath:
+        path: /usr/share/zoneinfo/US/Pacific
+    - name: data-vol
+      persistentVolumeClaim:
+        claimName: plex-config
+    - name: scratch-vol
+      persistentVolumeClaim:
+        claimName: data-loader-scratch
+    - name: entrypoint-sh
+      configMap:
+        name: data-loader-script
+        items:
+          - key: entrypoint.sh
+            path: entrypoint.sh
+  restartPolicy: Never

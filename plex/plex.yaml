@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: plex
+  namespace: default
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: satsuki.daleajackson.io
+spec:
+  selector:
+    app: plex
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+  - name: plex-port
+    protocol: TCP
+    port: 32400
+    targetPort: 32400
+  loadBalancerIP: 10.69.69.200
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  plex
+  namespace: default
+  labels:
+    app:  plex
+spec:
+  selector:
+    matchLabels:
+      app: plex
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app:  plex
+    spec:
+      containers:
+      - name:  plex
+        image:  plexinc/pms-docker:latest
+        resources:
+          requests:
+            cpu: "2"
+            memory: 200Mi
+          limits:
+            cpu: "4"
+            memory: 1Gi
+        env:
+          - name: ADVERTISE_IP
+            value: http://10.69.69.200:32400/
+        ports:
+        - containerPort: 32400
+          name:  plex-port
+        volumeMounts:
+        - name: plex-config
+          mountPath: /config
+        - name: plex-transcode
+          mountPath: /transcode
+        - name: plex-media
+          mountPath: /media/plex
+        - name: localtime
+          mountPath: /etc/localtime
+      - name: promtail-sidecar
+        image: grafana/promtail:2.5.0
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            cpu: 100m
+            memory: 200Mi
+        args:
+          - "-config.file=/etc/promtail/promtail.yaml"
+        volumeMounts:
+          - name: promtail-config
+            mountPath: /etc/promtail
+          - name: plex-config
+            mountPath: /config/plex-volume
+            readOnly: true
+      volumes:
+        - name: plex-config
+          persistentVolumeClaim:
+            claimName: plex-config
+        - name: plex-transcode
+          persistentVolumeClaim:
+            claimName: plex-transcode
+        - name: plex-media
+          persistentVolumeClaim:
+            claimName: plex-media
+        - name: promtail-config
+          configMap:
+            name: promtail-plex
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/US/Pacific
+      restartPolicy: Always

@@ -43,6 +43,23 @@ data:
       }
     }
 ---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: data-server-tar-script
+  namespace: default
+data:
+  40-tar-data-dir.sh: |
+    #!/bin/bash
+
+    ARCHIVE_FILE=/scratch/archive.tar.gz
+    if [[ ! -f "$ARCHIVE_FILE" ]]; then
+      PREV_DIR=$(pwd)
+      cd /data
+      tar --exclude='./lost+found' -czvf /scratch/archive.tar.gz .
+      cd $PREV_DIR
+    fi
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -92,24 +109,30 @@ spec:
           mountPath: /data
         - name: scratch-vol
           mountPath: /scratch
+        - name: tar-script
+          mountPath: /docker-entrypoint.d/40-tar-data-dir.sh
+          subPath: 40-tar-data-dir.sh
         - name: nginx-default-conf
           mountPath: /etc/nginx/conf.d
           readOnly: true
       volumes:
         - name: data-vol
           persistentVolumeClaim:
-            claimName: code-server-config
+            claimName: plex-config
+        - name: tar-script
+          configMap:
+            name: data-server-tar-script
+            defaultMode: 0775
+            items:
+            - key: 40-tar-data-dir.sh
+              path: 40-tar-data-dir.sh
         - name: nginx-default-conf
           configMap:
             name: nginx-default-conf
-            items: 
-            - key: default.conf
-              path: default.conf
         - name: localtime
           hostPath:
             path: /usr/share/zoneinfo/US/Pacific
         - name: scratch-vol
           persistentVolumeClaim:
             claimName: data-server-nginx-scratch
-
       restartPolicy: Always

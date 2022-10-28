@@ -1,0 +1,10 @@
+apiVersion: projectcalico.org/v3
+kind: BGPConfiguration
+metadata:
+  name: default
+  namespace: calico-system
+spec:
+  nodeToNodeMeshEnabled: true
+  asNumber: 65006
+  serviceLoadBalancerIPs:
+    - cidr: 10.2.69.0/24

@@ -1,0 +1,37 @@
+apiVersion: projectcalico.org/v3
+kind: CalicoNodeStatus
+metadata:
+  name: aomine-caliconodestatus
+spec:
+  classes:
+    - Agent
+    - BGP
+    - Routes
+  node: aomine
+  updatePeriodSeconds: 10
+
+---
+apiVersion: projectcalico.org/v3
+kind: CalicoNodeStatus
+metadata:
+  name: kagami-caliconodestatus
+spec:
+  classes:
+    - Agent
+    - BGP
+    - Routes
+  node: kagami
+  updatePeriodSeconds: 10
+
+---
+apiVersion: projectcalico.org/v3
+kind: CalicoNodeStatus
+metadata:
+  name: kuroko-caliconodestatus
+spec:
+  classes:
+    - Agent
+    - BGP
+    - Routes
+  node: kuroko
+  updatePeriodSeconds: 10  

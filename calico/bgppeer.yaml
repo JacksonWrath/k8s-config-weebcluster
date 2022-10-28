@@ -1,0 +1,8 @@
+apiVersion: projectcalico.org/v3
+kind: BGPPeer
+metadata:
+  name: vyos-peer
+  namespace: calico-system
+spec:
+  peerIP: 10.69.100.1
+  asNumber: 65001

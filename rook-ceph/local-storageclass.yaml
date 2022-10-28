@@ -1,0 +1,8 @@
+# Fixes a dashboard bug with OSDs provisioned with raw devices
+# https://github.com/rook/rook/issues/10703
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer

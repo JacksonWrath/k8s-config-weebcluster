@@ -52,28 +52,59 @@ data:
   40-tar-data-dir.sh: |
     #!/bin/bash
 
-    ARCHIVE_FILE=/scratch/archive.tar.gz
+    ARCHIVE_FILE=/scratch/$ARCHIVE_FILENAME.tar.gz
     if [[ ! -f "$ARCHIVE_FILE" ]]; then
       PREV_DIR=$(pwd)
       cd /data
-      tar --exclude='./lost+found' -czvf /scratch/archive.tar.gz .
+      tar --exclude='./lost+found' -czvf $ARCHIVE_FILE .
       cd $PREV_DIR
     fi
 ---
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: data-server-scratch-nfs-saitama
+spec:
+  capacity:
+    storage: 200Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs
+  nfs:
+    path: /home/daleajackson/Desktop/k8s_scratch
+    server: 10.1.69.69
+    readOnly: false
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: data-server-nginx-scratch
-  namespace: default
-  labels:
-    app: data-server-nginx
+  name: data-server-scratch-nfs-saitama
 spec:
-  storageClassName: longhorn
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteMany
+  storageClassName: nfs
   resources:
     requests:
-      storage: 200Gi
+      storage: 1Mi
+    limits:
+      storage: 100Ti
+  volumeName: data-server-scratch-nfs-saitama
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: data-server-nginx-scratch
+#   namespace: default
+#   labels:
+#     app: data-server-nginx
+# spec:
+#   storageClassName: longhorn
+#   accessModes:
+#   - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 200Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -95,6 +126,9 @@ spec:
       containers:
       - name:  data-server-nginx
         image:  nginx:latest
+        env:
+        - name: ARCHIVE_FILENAME
+          value: code-server-config
         resources:
           requests:
             cpu: "0"
@@ -118,7 +152,7 @@ spec:
       volumes:
         - name: data-vol
           persistentVolumeClaim:
-            claimName: plex-config
+            claimName: code-server-config
         - name: tar-script
           configMap:
             name: data-server-tar-script
@@ -134,5 +168,5 @@ spec:
             path: /usr/share/zoneinfo/US/Pacific
         - name: scratch-vol
           persistentVolumeClaim:
-            claimName: data-server-nginx-scratch
+            claimName: data-server-scratch-nfs-saitama
       restartPolicy: Always

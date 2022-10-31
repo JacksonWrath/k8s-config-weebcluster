@@ -6,5 +6,6 @@ metadata:
 spec:
   nodeToNodeMeshEnabled: true
   asNumber: 65006
-  serviceLoadBalancerIPs:
-    - cidr: 10.2.69.0/24
+  # metallb is now currently configured to advertise services
+  # serviceLoadBalancerIPs:
+  #   - cidr: 10.2.69.0/24

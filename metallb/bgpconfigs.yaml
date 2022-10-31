@@ -1,0 +1,15 @@
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: vyos-peer
+  namespace: metallb-system
+spec:
+  myASN: 65003
+  peerASN: 65001
+  peerAddress: 10.69.100.1
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: bgp-advertisement
+  namespace: metallb-system

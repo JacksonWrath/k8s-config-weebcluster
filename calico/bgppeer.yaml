@@ -1,3 +1,5 @@
+# Do not apply currently. Not used because node-mesh is enabled.
+# metallb is configured to advertise services instead
 apiVersion: projectcalico.org/v3
 kind: BGPPeer
 metadata:

@@ -15,7 +15,6 @@ spec:
     protocol: TCP
     port: 32400
     targetPort: 32400
-  loadBalancerIP: 10.69.69.200
 ---
 apiVersion: apps/v1
 kind: Deployment

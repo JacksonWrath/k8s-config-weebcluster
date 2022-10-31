@@ -9,8 +9,6 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfs
-  mountOptions:
-    - "subtree_check"
   nfs:
     path: /mnt/kirito-pool/YoRHa/media
     server: kirito.daleajackson.io

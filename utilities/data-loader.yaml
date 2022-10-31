@@ -1,17 +1,33 @@
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: data-loader-scratch-nfs-saitama
+spec:
+  capacity:
+    storage: 200Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs
+  nfs:
+    path: /home/daleajackson/Desktop/k8s_scratch
+    server: 10.1.69.69
+    readOnly: true
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: data-loader-scratch
-  namespace: default
-  labels:
-    app: data-loader
+  name: data-loader-scratch-nfs-saitama
 spec:
-  storageClassName: nvme-rook-ceph
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteMany
+  storageClassName: nfs
   resources:
     requests:
-      storage: 200Gi
+      storage: 1Mi
+    limits:
+      storage: 100Ti
+  volumeName: data-loader-scratch-nfs-saitama
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -21,13 +37,17 @@ metadata:
 data:
   entrypoint.sh: |
     #!/bin/bash
-    apt-get update;
-    apt-get install -y wget;
-    wget -nv 10.69.69.14/scratch/archive.tar.gz -O /scratch/archive.tar.gz;
-    tar -xzvf /scratch/archive.tar.gz -C /data;
+    ARCHIVE_FILE=/scratch/$ARCHIVE_FILENAME.tar.gz
+    if [[ -f "$ARCHIVE_FILE" ]]; then
+      cd /data
+      tar -xzvf $ARCHIVE_FILE .
+      echo "Complete!"
+    else
+      echo "Skipped, $ARCHIVE_FILE does not exist."
+    fi
     echo Data directory contents:;
-    ls -lahtr /data;
-    if [[ ! -z $WAIT_ON_FINISH ]]; then while true; do sleep 30; done;
+    ls -lah /data;
+    if [[ ! -z $WAIT_ON_FINISH ]]; then while true; do sleep 30; done; fi
 ---
 apiVersion: v1
 kind: Pod
@@ -40,8 +60,10 @@ spec:
     image:  ubuntu:latest
     command: [ "/bin/bash", "/entrypoint.sh" ]
     env:
-    - name: WAIT_ON_FINISH
-      value: "1"
+    - name: ARCHIVE_FILENAME
+      value: tautulli-config
+    # - name: WAIT_ON_FINISH
+    #   value: "1"
     resources:
       requests:
         cpu: "0"
@@ -65,10 +87,10 @@ spec:
         path: /usr/share/zoneinfo/US/Pacific
     - name: data-vol
       persistentVolumeClaim:
-        claimName: plex-config
+        claimName: tautulli-config
     - name: scratch-vol
       persistentVolumeClaim:
-        claimName: data-loader-scratch
+        claimName: data-loader-scratch-nfs-saitama
     - name: entrypoint-sh
       configMap:
         name: data-loader-script

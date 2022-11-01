@@ -1,0 +1,89 @@
+apiVersion: minio.min.io/v2
+kind: Tenant
+metadata:
+  name: yuno
+  namespace: minio
+scheduler:
+  name: ""
+spec:
+  certConfig:
+    commonName: '*.yuno-hl.minio.svc.weebcluster.k8s.daleajackson.io'
+    dnsNames:
+    - yuno-ss-0-{0...5}.yuno-hl.minio.svc.weebcluster.k8s.daleajackson.io
+    organizationName:
+    - system:nodes
+  configuration:
+    name: yuno-env-configuration
+  exposeServices:
+    console: true
+    minio: true
+  image: minio/minio:RELEASE.2022-10-15T19-57-03Z
+  imagePullPolicy: IfNotPresent
+  imagePullSecret: {}
+  log:
+    audit:
+      diskCapacityGB: 5
+    db:
+      image: library/postgres:13
+      initimage: busybox:1.33.1
+      resources: {}
+      volumeClaimTemplate:
+        metadata:
+          name: yuno-log
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: "5368709120"
+          storageClassName: nvme-2repl-rook-ceph
+        status: {}
+    image: minio/operator:v4.5.3
+    resources: {}
+  mountPath: /export
+  podManagementPolicy: Parallel
+  pools:
+  - name: ss-0
+    resources: {}
+    servers: 6
+    volumeClaimTemplate:
+      apiVersion: v1
+      kind: persistentvolumeclaims
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+        storageClassName: nvme-2repl-rook-ceph
+      status: {}
+    volumesPerServer: 1
+    topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/arch
+      whenUnsatisfiable: DoNotSchedule
+  prometheus:
+    diskCapacityGB: 5
+    image: quay.io/prometheus/prometheus:latest
+    initimage: busybox:1.33.1
+    resources: {}
+    sidecarimage: alpine
+  requestAutoCert: true
+  serviceMetadata:
+    minioServiceAnnotations:
+      external-dns.alpha.kubernetes.io/hostname: yuno.daleajackson.io
+    consoleServiceAnnotations:
+      external-dns.alpha.kubernetes.io/hostname: yuno-console.daleajackson.io
+  users:
+  - name: yuno-user-1
+status:
+  availableReplicas: 0
+  certificates: {}
+  currentState: ""
+  pools: null
+  revision: 0
+  syncVersion: ""
+  usage: {}
+
+
+

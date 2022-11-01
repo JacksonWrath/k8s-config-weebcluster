@@ -1,0 +1,10 @@
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: nvmepool-2repl
+  namespace: rook-ceph
+spec:
+  failureDomain: host
+  replicated:
+    size: 2
+  deviceClass: nvme

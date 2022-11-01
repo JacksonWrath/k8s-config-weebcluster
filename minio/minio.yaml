@@ -10,6 +10,8 @@ spec:
     commonName: '*.yuno-hl.minio.svc.weebcluster.k8s.daleajackson.io'
     dnsNames:
     - yuno-ss-0-{0...5}.yuno-hl.minio.svc.weebcluster.k8s.daleajackson.io
+    - yuno.daleajackson.io
+    - yuno-console.daleajackson.io
     organizationName:
     - system:nodes
   configuration:
@@ -68,6 +70,7 @@ spec:
     initimage: busybox:1.33.1
     resources: {}
     sidecarimage: alpine
+    storageClassName: nvme-2repl-rook-ceph
   requestAutoCert: true
   serviceMetadata:
     minioServiceAnnotations:

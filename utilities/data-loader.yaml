@@ -61,7 +61,7 @@ spec:
     command: [ "/bin/bash", "/entrypoint.sh" ]
     env:
     - name: ARCHIVE_FILENAME
-      value: tautulli-config
+      value: FILENAME_HERE_WITHOUT_TAR_GZ
     # - name: WAIT_ON_FINISH
     #   value: "1"
     resources:
@@ -87,7 +87,7 @@ spec:
         path: /usr/share/zoneinfo/US/Pacific
     - name: data-vol
       persistentVolumeClaim:
-        claimName: tautulli-config
+        claimName: CLAIM_NAME_HERE
     - name: scratch-vol
       persistentVolumeClaim:
         claimName: data-loader-scratch-nfs-saitama

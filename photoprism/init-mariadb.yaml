@@ -1,0 +1,47 @@
+###
+# Run-once pod for initializing mariadb
+#
+# The command override in the pod is actually an entrypoint override.
+# This causes the init scripts in the mariadb container to not run. Container fails with:
+# "Fatal error: Can't open and lock privilege tables: Table 'mysql.db' doesn't exist"
+# 
+# https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#define-a-command-and-arguments-when-you-create-a-pod
+# 
+###
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-mariadb
+  namespace: default
+  labels:
+    app: init-mariadb
+spec:
+  containers:
+  - name: init-mariadb
+    image:  mariadb:10.9
+    resources:
+      limits:
+        cpu: 200m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 200Mi
+    envFrom:
+      - configMapRef:
+          name: photoprism-mariadb-env
+    ports:
+    - containerPort: 3306
+      name: mariadb
+    volumeMounts:
+    - name: mariadb
+      mountPath: /var/lib/mysql
+    - name: localtime
+      mountPath: /etc/localtime
+  volumes:
+    - name: mariadb
+      persistentVolumeClaim:
+        claimName: photoprism-mariadb
+    - name: localtime
+      hostPath:
+        path: /usr/share/zoneinfo/US/Pacific
+  restartPolicy: Never

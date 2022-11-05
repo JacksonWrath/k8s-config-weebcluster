@@ -12,6 +12,7 @@ data:
   # PHOTOPRISM_SITE_URL: "http://photoprism.me:2343/"  # server URL in the format "http(s)://domain.name(:port)/(path)"
   PHOTOPRISM_HTTP_HOST: "0.0.0.0"
   PHOTOPRISM_HTTP_PORT: "2342"
+  PHOTOPRISM_STORAGE_PATH: "/photoprism-storage"
   PHOTOPRISM_ORIGINALS_LIMIT: "5000"             # file size limit for originals in MB (increase for high-res video)
   PHOTOPRISM_HTTP_COMPRESSION: "gzip"            # improves transfer speed and bandwidth utilization (none or gzip)
   PHOTOPRISM_LOG_LEVEL: "info"                   # log level: trace, debug, info, warning, error, fatal, or panic

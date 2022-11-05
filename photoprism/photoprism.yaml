@@ -67,9 +67,9 @@ spec:
           name: photoprism-http
         volumeMounts:
         - name: photoprism-storage
-          mountPath: /photoprism/storage
-        - name: photos-nfs
-          mountPath: /photoprism/originals
+          mountPath: /photoprism-storage
+        - name: photoprism-nfs
+          mountPath: /photoprism
         - name: localtime
           mountPath: /etc/localtime
         readinessProbe:
@@ -80,9 +80,9 @@ spec:
         - name: photoprism-storage
           persistentVolumeClaim:
             claimName: photoprism-storage
-        - name: photos-nfs
+        - name: photoprism-nfs
           nfs:
-            path: /mnt/kirito-pool/YoRHa/photos
+            path: /mnt/kirito-pool/YoRHa/photoprism
             server: kirito.daleajackson.io
         - name: localtime
           hostPath:

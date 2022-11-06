@@ -3,13 +3,10 @@ kind: Service
 metadata:
   name: photoprism
   namespace: default
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: photos.daleajackson.io
 spec:
   selector:
     app: photoprism
-  type: LoadBalancer
-  externalTrafficPolicy: Local
+  type: ClusterIP
   sessionAffinity: None
   ports:
   - name: photoprism-http

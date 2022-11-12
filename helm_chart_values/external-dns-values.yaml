@@ -5,6 +5,10 @@ txtPrefix: "k8s-external-dns-"
 domainFilters:
 - daleajackson.io
 
+sources:
+- service
+# - ingress
+
 provider: rfc2136
 
 extraArgs:

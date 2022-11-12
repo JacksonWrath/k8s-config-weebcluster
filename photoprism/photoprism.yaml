@@ -54,7 +54,7 @@ spec:
             cpu: 100m
             memory: 1Gi
           limits:
-            cpu: "4"
+            cpu: "30"
             memory: 8Gi
         envFrom:
         - configMapRef:

@@ -1,8 +1,12 @@
 controller:
   ingressClassResource:
     name: nginx-external
-    controllerValue: "k8s.io/ingress-nginx-external"
+    controllerValue: k8s.io/ingress-nginx-external
   ingressClass: nginx-external
+  config:
+    whitelist-source-range: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+  service:
+    externalTrafficPolicy: Local
 
 # -- TCP service key-value pairs
 ## Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/exposing-tcp-udp-services.md

@@ -1,39 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: photoprism-external
+  name: photoprism
   namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
 spec:
   tls:
   - hosts:
     - photos.bukkake.life
     secretName: photoprism-tls
   ingressClassName: nginx-external
-  rules:
-  - host: photos.bukkake.life
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: photoprism
-            port:
-              number: 80
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: photoprism-internal
-  namespace: default
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-spec:
-  tls:
-  - hosts:
-    - photos.bukkake.life
-    secretName: photoprism-tls
-  ingressClassName: nginx-internal
   rules:
   - host: photos.bukkake.life
     http:

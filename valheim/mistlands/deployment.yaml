@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  valheim-mistlands
+  namespace: default
+  labels:
+    app:  valheim-mistlands
+spec:
+  selector:
+    matchLabels:
+      app: valheim-mistlands
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app:  valheim-mistlands
+    spec:
+      containers:
+      - name:  valheim-mistlands
+        image:  lloesche/valheim-server:latest
+        env:
+        - name: SERVER_NAME
+          value: raleighmistlands
+        - name: WORLD_NAME
+          value: raleighmistlands
+        - name: SERVER_PASS
+          valueFrom:
+            secretKeyRef:
+              name: valheim-mistlands-secret
+              key: server_pass
+        - name: SERVER_PORT
+          value: "42069"
+        - name: SERVER_PUBLIC
+          value: "false"
+        - name: BACKUPS_MAX_AGE
+          value: "30"
+        ports:
+        - containerPort: 42069
+          name: gameport
+        - containerPort: 42070
+          name: queryport
+        securityContext:
+          capabilities:
+            add:
+            - SYS_NICE
+        resources:
+          requests:
+            cpu: "2"
+            memory: 12Gi
+          limits:
+            cpu: "4"
+            memory: 12Gi
+        volumeMounts:
+        - name: gamefiles
+          mountPath: /config
+        - name: serverfiles
+          mountPath: /opt/valheim
+      volumes:
+      - name: gamefiles
+        persistentVolumeClaim:
+          claimName: valheim-mistlands-world
+      - name: serverfiles
+        persistentVolumeClaim:
+          claimName: valheim-mistlands-server
+      restartPolicy: Always

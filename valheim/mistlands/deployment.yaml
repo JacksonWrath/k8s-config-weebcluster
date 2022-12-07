@@ -36,6 +36,12 @@ spec:
           value: "false"
         - name: BACKUPS_MAX_AGE
           value: "30"
+        - name: RESTART_CRON
+          value: "0 12 * * *" # Container is UTC
+        - name: IDLE_DATAGRAM_WINDOW
+          value: "10" # seconds
+        - name: IDLE_DATAGRAM_MAX_COUNT
+          value: "0"
         ports:
         - containerPort: 42069
           name: gameport

@@ -34,6 +34,8 @@ spec:
           value: "42069"
         - name: SERVER_PUBLIC
           value: "false"
+        - name: BACKUPS_IF_IDLE
+          value: "false"
         - name: BACKUPS_MAX_AGE
           value: "30"
         - name: RESTART_CRON

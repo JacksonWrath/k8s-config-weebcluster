@@ -1,0 +1,21 @@
+global:
+  persistence:
+    storageClass: nvme-rook-ceph
+
+ingress:
+  create: true
+  class: nginx-external
+  tls:
+    enabled: true
+    secretName: k10-dashboard-tls
+  host: k10.bukkake.life
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+
+cluster:
+  domainName: weebcluster.k8s.daleajackson.io
+
+auth:
+  basicAuth:
+    enabled: true
+    secretName: k10-dashboard-htpasswd

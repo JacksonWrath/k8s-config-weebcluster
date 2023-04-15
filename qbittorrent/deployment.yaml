@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  qbittorrent
+  namespace: default
+  labels:
+    app:  qbittorrent
+spec:
+  selector:
+    matchLabels:
+      app: qbittorrent
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app:  qbittorrent
+    spec:
+      securityContext:
+        sysctls:
+        - name: net.ipv4.conf.all.src_valid_mark
+          value: "1"
+      containers:
+      - name:  qbittorrent
+        image:  hotio/qbittorrent:release-4.5.2
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+          limits:
+            cpu: "1"
+            memory: 1Gi
+        ports:
+        - containerPort: 8080
+          name:  qb-http
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - name: qbittorrent-config
+          mountPath: /config
+        - name: qbittorrent-smb
+          mountPath: /data/qbittorrent
+        - name: localtime
+          mountPath: /etc/localtime:ro
+      - name: wireguard
+        image: ghcr.io/k8s-at-home/wireguard:v1.0.20210914
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN", "SYS_MODULE"]
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+          limits:
+            cpu: "1"
+            memory: 1Gi
+        env:
+          - name: IPTABLES_BACKEND
+            value: "legacy"
+          - name: KILLSWITCH
+            value: "true"
+          - name: KILLSWITCH_EXCLUDEDNETWORKS_IPV4
+            value: "172.16.0.0/15;10.1.69.0/24"
+        volumeMounts:
+        - name: wireguard-wg0-secret
+          mountPath: /etc/wireguard/wg0.conf
+          subPath: wg0.conf
+        - name: localtime
+          mountPath: /etc/localtime:ro
+      volumes:
+        - name: qbittorrent-config
+          persistentVolumeClaim:
+            claimName: qbittorrent-config
+        - name: qbittorrent-smb
+          persistentVolumeClaim: 
+            claimName: qbittorrent-smb-pvc
+        - name: wireguard-wg0-secret
+          secret:
+            secretName: wireguard-wg0-secret
+            items:
+              - key: wg0_ipv4.conf
+                path: wg0.conf
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/US/Pacific
+      restartPolicy: Always

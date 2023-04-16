@@ -10,7 +10,8 @@ ingress:
     secretName: k10-dashboard-tls
   host: k10.bukkake.life
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/app-root: /k10
 
 cluster:
   domainName: weebcluster.k8s.daleajackson.io

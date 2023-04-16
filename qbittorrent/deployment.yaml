@@ -33,7 +33,7 @@ spec:
             memory: 1Gi
         ports:
         - containerPort: 8080
-          name:  qb-http
+          name: qb-http
         env:
         - name: PUID
           value: "1000"
@@ -64,7 +64,7 @@ spec:
           - name: KILLSWITCH
             value: "true"
           - name: KILLSWITCH_EXCLUDEDNETWORKS_IPV4
-            value: "172.16.0.0/15;10.1.69.0/24"
+            value: "10.69.20.0/22"
         volumeMounts:
         - name: wireguard-wg0-secret
           mountPath: /etc/wireguard/wg0.conf

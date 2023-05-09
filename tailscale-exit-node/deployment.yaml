@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  tailscale-exit-node
+  namespace: default
+  labels:
+    app:  tailscale-exit-node
+spec:
+  selector:
+    matchLabels:
+      app: tailscale-exit-node
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app:  tailscale-exit-node
+    spec:
+      serviceAccountName: tailscale
+      hostname: weebcluster-exit-node
+      containers:
+      - name: tailscale
+        image: ghcr.io/tailscale/tailscale:latest
+        imagePullPolicy: Always
+        env:
+        - name: TS_KUBE_SECRET
+          value: tailscale-state
+        - name: TS_EXTRA_ARGS
+          value: "--advertise-exit-node"
+        - name: TS_ROUTES
+          value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+        - name: TS_AUTH_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tailscale-auth
+              key: TS_AUTHKEY
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime:ro
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/US/Pacific
+      restartPolicy: Always

@@ -4,9 +4,10 @@ metadata:
   name: photoprism
   namespace: default
   annotations:
-    # nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
+    #nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
     nginx.ingress.kubernetes.io/client-body-buffer-size: 200M
     nginx.ingress.kubernetes.io/proxy-body-size: 1G
+    cert-manager.io/cluster-issuer: letsencrypt
 spec:
   tls:
   - hosts:

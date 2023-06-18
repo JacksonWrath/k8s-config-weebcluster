@@ -1,0 +1,31 @@
+clusterDomain: weebcluster.k8s.daleajackson.io
+
+ingress:
+  enabled: true
+  className: nginx-external
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+  hosts:
+    - host: gitea.bukkake.life
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+      - gitea.bukkake.life
+      secretName: gitea-tls
+
+postgresql:
+  auth: 
+    enablePostgresUser: false
+    existingSecret: gitea-db-auth
+
+gitea:
+  admin:
+    existingSecret: gitea-admin-auth
+  additionalConfigFromEnvs:
+  - name: ENV_TO_INI__DATABASE__PASSWD
+    valueFrom:
+      secretKeyRef:
+        name: gitea-db-auth
+        key: password

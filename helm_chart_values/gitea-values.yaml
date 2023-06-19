@@ -6,13 +6,13 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging
   hosts:
-    - host: gitea.bukkake.life
+    - host: asuna.bukkake.life
       paths:
         - path: /
           pathType: Prefix
   tls:
     - hosts:
-      - gitea.bukkake.life
+      - asuna.bukkake.life
       secretName: gitea-tls
 
 postgresql:

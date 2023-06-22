@@ -6,6 +6,8 @@ controller:
   config:
     whitelist-source-range: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
   service:
+    annotations:
+      metallb.universe.tf/loadBalancerIPs: 10.2.69.1
     externalTrafficPolicy: Local
 
 # -- TCP service key-value pairs

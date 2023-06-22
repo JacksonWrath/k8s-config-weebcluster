@@ -1,0 +1,33 @@
+###
+# Run-once pod for pre-populating the volume with the zones ConfigMap
+#
+# Doing it this way because of dynamic updates, which will change the zone file
+###
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-bind-volume
+  namespace: bind-dns
+  labels:
+    app: init-bind-volume
+spec:
+  containers:
+  - name: init-bind-volume
+    image:  alpine:latest
+    command: ["/bin/sh"]
+    args:
+      - "-c"
+      - "mkdir -p /data; cp -Lnr /configmap/* /data; ls -lah /data/*; cat /data/*"
+    volumeMounts:
+    - name: data-dest
+      mountPath: /data
+    - name: configmap-src
+      mountPath: /configmap
+  volumes:
+    - name: data-dest
+      persistentVolumeClaim:
+        claimName: bind-data
+    - name: configmap-src
+      configMap:
+        name: zones-conf
+  restartPolicy: Never

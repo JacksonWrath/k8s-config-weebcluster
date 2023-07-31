@@ -21,6 +21,7 @@ gateway:
     ingressClassName: nginx-external
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/client-body-buffer-size: 1M
     hosts:
     - host: loki.bukkake.life
       paths: 

@@ -1,5 +1,6 @@
+configmap:
+  enabled: true
 config:
   clients:
   - url: https://loki.bukkake.life/loki/api/v1/push
-configmap:
-  enabled: true
+    batchwait: 10s

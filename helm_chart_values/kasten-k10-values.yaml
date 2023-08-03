@@ -13,9 +13,6 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/app-root: /k10
 
-cluster:
-  domainName: weebcluster.k8s.daleajackson.io
-
 auth:
   basicAuth:
     enabled: true

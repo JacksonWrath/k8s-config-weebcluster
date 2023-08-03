@@ -1,5 +1,3 @@
-clusterDomain: weebcluster.k8s.daleajackson.io
-
 ingress:
   enabled: true
   className: nginx-external
@@ -16,6 +14,7 @@ ingress:
       secretName: gitea-tls
 
 postgresql:
+  enabled: true
   auth: 
     enablePostgresUser: false
     existingSecret: gitea-db-auth
@@ -24,8 +23,15 @@ gitea:
   admin:
     existingSecret: gitea-admin-auth
   additionalConfigFromEnvs:
-  - name: ENV_TO_INI__DATABASE__PASSWD
+  - name: GITEA__DATABASE__PASSWD
     valueFrom:
       secretKeyRef:
         name: gitea-db-auth
         key: password
+
+persistence:
+  create: false
+  claimName: data-gitea-0
+
+postgresql-ha:
+  enabled: false

@@ -5,9 +5,9 @@ scheduler:
   name: ""
 spec:
   certConfig:
-    commonName: '*.yuno-hl.minio.svc.weebcluster.k8s.daleajackson.io'
+    commonName: '*.yuno-hl.minio.svc.cluster.local'
     dnsNames:
-    - yuno-ss-0-{0...5}.yuno-hl.minio.svc.weebcluster.k8s.daleajackson.io
+    - yuno-ss-0-{0...5}.yuno-hl.minio.svc.cluster.local
     - yuno.bukkake.life
     - yuno-console.bukkake.life
     organizationName:

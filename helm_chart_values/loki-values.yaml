@@ -1,5 +1,3 @@
-global:
-  clusterDomain: weebcluster.k8s.daleajackson.io
 loki:
   auth_enabled: false # Disables multi-tenancy -- https://grafana.com/docs/loki/latest/operations/multi-tenancy/
   storage:

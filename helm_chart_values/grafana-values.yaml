@@ -1,0 +1,15 @@
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+  ingressClassName: nginx-external
+  tls:
+    - hosts:
+      - grafana.bukkake.life
+      secretName: grafana-tls
+  hosts:
+  - grafana.bukkake.life
+persistence:
+  enabled: true
+admin:
+  existingSecret: grafana-auth

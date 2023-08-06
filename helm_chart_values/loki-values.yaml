@@ -1,0 +1,31 @@
+loki:
+  auth_enabled: false # Disables multi-tenancy -- https://grafana.com/docs/loki/latest/operations/multi-tenancy/
+  storage:
+    bucketNames:
+      chunks: loki-chunks
+      rule: loki-ruler
+      admin: loki-admin
+    type: s3
+    s3:
+      endpoint: https://yuno.bukkake.life
+      s3ForcePathStyle: true
+      # Loki's Helm chart doesn't support providing a Secret for these values...
+      # They are set using a separate values file during the chart install.
+      # accessKeyId: "something"
+      # secretAccessKey: "something"
+gateway:
+  ingress:
+    enabled: true
+    ingressClassName: nginx-external
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/client-body-buffer-size: 1M
+    hosts:
+    - host: loki.bukkake.life
+      paths: 
+      - path: /
+        pathType: Prefix
+    tls:
+    - hosts:
+      - loki.bukkake.life
+      secretName: loki-gateway-tls

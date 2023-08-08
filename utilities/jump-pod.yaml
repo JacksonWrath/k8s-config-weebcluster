@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name:  jump-pod
+  namespace: gitea
+spec:
+  containers:
+  - name:  jump-pod
+    image:  ubuntu:latest
+    command: [ "/bin/bash", "-c", "while true; do sleep 30; done" ]
+    resources:
+      requests:
+        cpu: "0"
+        memory: "0"
+      limits:
+        cpu: "4"
+        memory: 2Gi
+    volumeMounts:
+    - name: localtime
+      mountPath: /etc/localtime
+    - name: data-vol
+      mountPath: /data
+  volumes:
+    - name: localtime
+      hostPath:
+        path: /usr/share/zoneinfo/US/Pacific
+    - name: data-vol
+      persistentVolumeClaim:
+        claimName: CLAIM_NAME_HERE
+  restartPolicy: Never

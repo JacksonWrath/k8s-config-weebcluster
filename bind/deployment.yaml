@@ -32,8 +32,8 @@ spec:
             mountPath: /etc/bind
       volumes:
         - name: zones-vol
-          persistentVolumeClaim: 
-            claimName: bind-data
+          configMap:
+            name: zones-conf
         - name: config
           configMap:
             name: named-conf

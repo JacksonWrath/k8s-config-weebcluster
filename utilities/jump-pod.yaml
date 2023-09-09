@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name:  jump-pod
-  namespace: gitea
+  namespace: default
 spec:
   containers:
   - name:  jump-pod
@@ -16,15 +16,10 @@ spec:
         cpu: "4"
         memory: 2Gi
     volumeMounts:
-    - name: localtime
-      mountPath: /etc/localtime
     - name: data-vol
       mountPath: /data
   volumes:
-    - name: localtime
-      hostPath:
-        path: /usr/share/zoneinfo/US/Pacific
     - name: data-vol
       persistentVolumeClaim:
-        claimName: CLAIM_NAME_HERE
+        claimName: TARGET_PVC_NAME_HERE
   restartPolicy: Never

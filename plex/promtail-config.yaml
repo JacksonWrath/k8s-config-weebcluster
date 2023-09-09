@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: promtail-plex
-  namespace: default
+  namespace: plex
 data:
   promtail.yaml: |
     server:

@@ -3,7 +3,13 @@ kind: Ingress
 metadata:
   name: rook-ceph-mgr-dashboard
   namespace: rook-ceph
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
+  tls:
+  - hosts:
+    - ceph.bukkake.cafe
+    secretName: dashboard-tls
   ingressClassName: "nginx"
   rules:
   - host: ceph.bukkake.cafe

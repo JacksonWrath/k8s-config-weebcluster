@@ -29,7 +29,7 @@ spec:
             memory: 1Gi
         env:
           - name: ADVERTISE_IP
-            value: http://10.69.69.200:32400/
+            value: https://satsuki.bukkake.cafe/
         ports:
         - containerPort: 32400
           name:  plex-port

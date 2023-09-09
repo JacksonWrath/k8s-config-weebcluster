@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: qbittorrent-smb-pvc
+  namespace: qbittorrent
   labels:
     app: qbittorrent
     kasten-snapshot: exclude
@@ -12,6 +13,4 @@ spec:
   resources:
     requests:
       storage: 1Mi
-    limits:
-      storage: 100Ti
   volumeName: qbittorrent-smb-pv

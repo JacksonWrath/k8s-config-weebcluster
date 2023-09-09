@@ -2,18 +2,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: qbittorrent
-  namespace: default
+  namespace: qbittorrent
   annotations:
-    # nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
     cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
   tls:
   - hosts:
-    - vash.bukkake.life
+    - vash.bukkake.cafe
     secretName: qbittorrent-tls
-  ingressClassName: nginx-external
+  ingressClassName: nginx
   rules:
-  - host: vash.bukkake.life
+  - host: vash.bukkake.cafe
     http:
       paths:
       - path: /

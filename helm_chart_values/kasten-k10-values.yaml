@@ -4,11 +4,11 @@ global:
 
 ingress:
   create: true
-  class: nginx-external
+  class: nginx
   tls:
     enabled: true
     secretName: k10-dashboard-tls
-  host: k10.bukkake.life
+  host: k10.bukkake.cafe
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/app-root: /k10

@@ -4,7 +4,7 @@ metadata:
   name: k10-backup-kirito-pv
 spec:
   capacity:
-    storage: 100Ti
+    storage: 58Ti
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain

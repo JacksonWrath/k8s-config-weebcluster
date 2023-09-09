@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bind9-deployment
+  namespace: bind-dns
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: bind9
+  template:
+    metadata:
+      labels:
+        app: bind9
+    spec:
+      containers:
+      - name: bind9
+        image: ubuntu/bind9:edge
+        imagePullPolicy: Always
+        # env:
+        ports:
+        - containerPort: 53
+          protocol: TCP
+        - containerPort: 53
+          protocol: UDP
+        volumeMounts:
+          - name: zones-vol
+            mountPath: /var/bind/zones
+          - name: config
+            mountPath: /etc/bind
+      volumes:
+        - name: zones-vol
+          configMap:
+            name: zones-conf
+        - name: config
+          configMap:
+            name: named-conf

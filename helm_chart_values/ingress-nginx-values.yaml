@@ -1,8 +1,4 @@
 controller:
-  ingressClassResource:
-    name: nginx-external
-    controllerValue: k8s.io/ingress-nginx-external
-  ingressClass: nginx-external
   config:
     whitelist-source-range: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
   service:
@@ -11,12 +7,10 @@ controller:
 # -- TCP service key-value pairs
 ## Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/exposing-tcp-udp-services.md
 ##
-tcp: 
-  22: "gitea/gitea-ssh:22"
-#  8080: "default/example-tcp-svc:9000"
+tcp: {}
+  # 22: "gitea/gitea-ssh:22"
 
 # -- UDP service key-value pairs
 ## Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/exposing-tcp-udp-services.md
 ##
 udp: {}
-#  53: "kube-system/kube-dns:53"

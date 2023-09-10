@@ -1,15 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: minio-ingress
-  namespace: minio
+  name: minio-yuno-ingress
+  namespace: minio-yuno
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    ## Remove if using CA signed certificate
-    nginx.ingress.kubernetes.io/proxy-ssl-verify: "off"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-body-size: 5t
     nginx.ingress.kubernetes.io/server-snippet: |
       client_max_body_size 0;
     nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -17,11 +13,12 @@ metadata:
 spec:
   tls:
   - hosts:
-      - yuno.bukkake.life
-    secretName: minio-tls
-  ingressClassName: nginx-external
+      - yuno.bukkake.cafe
+      - yuno-console.bukkake.cafe
+    secretName: minio-yuno-tls
+  ingressClassName: nginx
   rules:
-  - host: yuno.bukkake.life
+  - host: yuno.bukkake.cafe
     http:
       paths:
       - path: /
@@ -30,4 +27,14 @@ spec:
           service:
             name: minio
             port:
-              number: 443
+              number: 80
+  - host: yuno-console.bukkake.cafe
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: yuno-console
+            port:
+              number: 9090

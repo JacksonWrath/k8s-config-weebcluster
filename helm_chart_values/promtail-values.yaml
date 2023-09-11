@@ -2,7 +2,7 @@ configmap:
   enabled: true
 config:
   clients:
-  - url: https://loki.bukkake.life/loki/api/v1/push
+  - url: http://loki-gateway/loki/api/v1/push
     batchwait: 10s
   snippets:
     extraScrapeConfigs: |

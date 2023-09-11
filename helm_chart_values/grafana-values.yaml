@@ -1,14 +1,14 @@
 ingress:
   enabled: true
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-staging
-  ingressClassName: nginx-external
+    cert-manager.io/cluster-issuer: letsencrypt
+  ingressClassName: nginx
   tls:
     - hosts:
-      - grafana.bukkake.life
+      - grafana.bukkake.cafe
       secretName: grafana-tls
   hosts:
-  - grafana.bukkake.life
+  - grafana.bukkake.cafe
 persistence:
   enabled: true
 admin:

@@ -42,23 +42,16 @@ spec:
           mountPath: /media/plex
         - name: localtime
           mountPath: /etc/localtime
-      # - name: promtail-sidecar
-      #   image: grafana/promtail:2.5.0
-      #   resources:
-      #     requests:
-      #       cpu: 100m
-      #       memory: 200Mi
-      #     limits:
-      #       cpu: 100m
-      #       memory: 200Mi
-      #   args:
-      #     - "-config.file=/etc/promtail/promtail.yaml"
-      #   volumeMounts:
-      #     - name: promtail-config
-      #       mountPath: /etc/promtail
-      #     - name: plex-config
-      #       mountPath: /config/plex-volume
-      #       readOnly: true
+      - name: promtail-sidecar
+        image: grafana/promtail:2.9.0
+        args:
+          - "-config.file=/etc/promtail/promtail.yaml"
+        volumeMounts:
+          - name: promtail-config
+            mountPath: /etc/promtail
+          - name: plex-config
+            mountPath: /config/plex-volume
+            readOnly: true
       volumes:
         - name: plex-config
           persistentVolumeClaim:

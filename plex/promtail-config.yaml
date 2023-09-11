@@ -8,7 +8,7 @@ data:
     server:
       disable: true
     clients:
-      - url: http://loki:lokipassword@gateway.loki.svc/loki/api/v1/push
+      - url: http://loki-gateway.loki/loki/api/v1/push
     scrape_configs:
       - job_name: plex-logs
         pipeline_stages:

@@ -18,6 +18,9 @@ config:
         - source_labels:
           - __journal__hostname
           target_label: node
+    extraRelabelConfigs:
+      - source_labels: ['__meta_kubernetes_pod_node_name']
+        target_label: '__host__'
 
 extraVolumes:
 - name: journal

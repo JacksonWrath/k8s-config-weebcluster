@@ -16,3 +16,9 @@ kubectl rook-ceph ceph osd crush set-device-class nvme osd.0 osd.1 osd.2 osd.3 o
 After initially setting up Rook, external-snapshotter needs to be set up. See here for more info:
 
 https://rook.io/docs/rook/latest-release/Storage-Configuration/Ceph-CSI/ceph-csi-snapshot/
+
+## system-upgrade-controller
+
+Install the k3s automated upgrade controller:
+
+https://docs.k3s.io/upgrades/automated#install-the-system-upgrade-controller

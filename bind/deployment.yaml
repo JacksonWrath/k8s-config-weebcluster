@@ -28,12 +28,17 @@ spec:
         volumeMounts:
           - name: zones-vol
             mountPath: /var/bind/zones
+          - name: zones-static-vol
+            mountPath: /var/bind/zones-static
           - name: config
             mountPath: /etc/bind
       volumes:
         - name: zones-vol
           configMap:
             name: zones-conf
+        - name: zones-static-vol
+          configMap:
+            name: zones-static-conf
         - name: config
           configMap:
             name: named-conf

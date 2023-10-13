@@ -18,3 +18,4 @@ data:
     @     A       10.2.69.1
     *     CNAME   bukkake.cafe.
     ns1   A       10.2.69.10
+    $INCLUDE /var/bind/zones-static/bukkake.cafe.static

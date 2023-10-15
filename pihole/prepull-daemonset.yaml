@@ -1,0 +1,41 @@
+##
+# This DaemonSet exists to "pre-pull" the Pi-hole image on all nodes. I do this because my nodes are actually relying on 
+# Pi-hole for their DNS; on pod restart, if the image isn't present, the node tries to pull it and fails because DNS is
+# now down. Pre-pulling the image on all nodes avoids this problem.
+#
+# When updating Pi-hole to a new image, this DaemonSet needs to be updated before updating the Pi-hole Deployment.
+# 
+# Mostly doing this because I want the DNS data of my home network in one place. Eventually I may look into pulling
+# the data into Grafana or something instead; then I may be able to run Pi-hole stateless with multiple replicas.
+##
+
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: prepuller
+  namespace: pihole
+spec:
+  selector:
+    matchLabels:
+      name: prepuller
+  template:
+    metadata:
+      labels:
+        name: prepuller
+    spec:
+      # Configure an init container for each image you want to pull
+      initContainers:
+      - name: pihole-image
+        # Set the image you want to pull
+        image: pihole/pihole:2023.05.2
+        # Use a known command that will exit successfully immediately
+        # Any no-op command will do but YMMV with scratch based containers
+        command: ["sh", "-c", "'true'"]
+        
+      # Use the pause container to ensure the Pod goes into a `Running` phase
+      # but doesn't take up resource on the cluster
+      # This is required because Pods in a DaemonSet are required to have a RestartPolicy of Always
+      containers:
+      - name: pause
+        image: k8s.gcr.io/pause

@@ -42,7 +42,7 @@ spec:
         volumeMounts:
         - name: qbittorrent-config
           mountPath: /config
-        - name: qbittorrent-smb
+        - name: qbittorrent-nfs
           mountPath: /data/qbittorrent
         - name: localtime
           mountPath: /etc/localtime:ro
@@ -75,9 +75,9 @@ spec:
         - name: qbittorrent-config
           persistentVolumeClaim:
             claimName: qbittorrent-config
-        - name: qbittorrent-smb
+        - name: qbittorrent-nfs
           persistentVolumeClaim: 
-            claimName: qbittorrent-smb-pvc
+            claimName: qbittorrent-nfs-pvc
         - name: wireguard-wg0-secret
           secret:
             secretName: wireguard-wg0-secret

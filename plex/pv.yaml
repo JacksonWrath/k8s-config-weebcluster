@@ -11,4 +11,4 @@ spec:
   storageClassName: nfs
   nfs:
     path: /mnt/kirito-pool/YoRHa/media
-    server: kirito.daleajackson.io
+    server: kirito.bukkake.cafe

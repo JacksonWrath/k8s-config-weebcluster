@@ -1,7 +1,6 @@
-(import 'env-base.libsonnet') {
-  _env+:: {
-    name: 'loki',
-    namespace: 'loki',
-  },
-  data: import 'loki.jsonnet',
-}
+local weebcluster = import 'weebcluster.libsonnet';
+
+local envName = 'loki';
+local namespace = 'loki';
+
+weebcluster.newTankaEnv(envName, namespace, import 'loki.jsonnet')

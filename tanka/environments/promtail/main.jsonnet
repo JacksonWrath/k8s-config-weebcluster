@@ -1,7 +1,6 @@
-(import 'env-base.libsonnet') {
-  _env+:: {
-    name: 'promtail',
-    namespace: 'promtail',
-  },
-  data: import 'promtail.jsonnet',
-}
+local weebcluster = import 'weebcluster.libsonnet';
+
+local envName = 'promtail';
+local namespace = 'promtail';
+
+weebcluster.newTankaEnv(envName, namespace, import 'promtail.jsonnet')

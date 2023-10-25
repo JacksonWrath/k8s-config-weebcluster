@@ -1,4 +1,5 @@
 local kube = import '1.27/main.libsonnet';
+local utils = import 'utils.libsonnet';
 
 // Kubernetes API object variables
 local pvc = kube.core.v1.persistentVolumeClaim;
@@ -8,6 +9,7 @@ local ingressRule = kube.networking.v1.ingressRule;
 local httpIngressPath = kube.networking.v1.httpIngressPath;
 
 {
+  local weebcluster = self,
   ingressDomainSuffix: 'bukkake.cafe',
 
   // Cluster constants
@@ -28,6 +30,31 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
     data: data,
   },
 
+  newStandardApp(appName, image, configVolSize, httpPortNumber, ingressSubdomain, additionalLabels={}):: {
+    local labels = {
+      app: appName,
+    } + additionalLabels,
+
+    local configVolume = weebcluster.newConfigVolume('1Gi', labels),
+    
+    local container = utils.newHttpContainer(appName, image, httpPortNumber) +
+    kube.core.v1.container.withVolumeMounts([configVolume.volumeMount]),
+
+    // Rendered manifests
+    persistentVolumeClaim: configVolume.configPVC,
+
+    deployment: utils.newSinglePodDeployment(appName, [container], labels) +
+      kube.apps.v1.deployment.spec.template.spec.withVolumes([configVolume.volume]),
+
+    service: utils.newHttpService(appName, self.deployment.spec.template.metadata.labels),
+
+    ingress: weebcluster.newStandardHttpIngress(
+      name=appName, 
+      subdomain=ingressSubdomain, 
+      service=self.service,
+    ),
+  },
+
   // Create a PVC with some cluster-specific defaults
   newStandardPVC(name, size, labels=null):: 
     pvc.new(name) + 
@@ -35,6 +62,14 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
     pvc.spec.withAccessModes(['ReadWriteOnce']) +
     pvc.spec.resources.withRequests({storage: size}) + 
     if labels != null then pvc.metadata.withLabelsMixin(labels) else {},
+
+  // Generate objects necessary for a standard "config" volume
+  newConfigVolume(size, labels):: {
+    local volumeName = labels.app + '-config',
+    configPVC:: weebcluster.newStandardPVC(volumeName, size, labels),
+    volume:: utils.newVolumeFromPVC('config', self.configPVC),
+    volumeMount:: kube.core.v1.volumeMount.new('config', '/config'),
+  },
 
   // Create an Ingress with some cluster-specific defaults
   local ingressAnnotations = {
@@ -55,4 +90,9 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
     ingress.spec.withTls([tls]) + 
     ingress.spec.withIngressClassName(self.nginxIngressClass) + 
     ingress.spec.withRules([rule]),
+
+  // Create an standard Ingress pointed at the 'http' port of a given service
+  newStandardHttpIngress(name, subdomain, service, pathPrefix='/')::
+    local servicePort = kube.core.v1.servicePort.withName('http');
+    self.newStandardIngress(name, subdomain, service, servicePort, pathPrefix)
 }

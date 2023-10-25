@@ -1,4 +1,5 @@
 local kube = import '1.27/main.libsonnet';
+local utils = import 'utils.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
 
 local container = kube.core.v1.container;
@@ -13,6 +14,7 @@ local secret = kube.core.v1.secret;
 
     // RBAC
     serviceAccount: kube.core.v1.serviceAccount.new('tailscale') +
+      // Namespace needs to be added because "withSubjects()" on the roleBinding expects it
       kube.core.v1.serviceAccount.metadata.withNamespace(config.namespace),
     local rbac = kube.rbac.v1,
     local resourceRule = kube.authorization.v1.resourceRule,
@@ -26,7 +28,7 @@ local secret = kube.core.v1.secret;
         resourceRule.withApiGroups(['']) +
         resourceRule.withResources(['secrets']) +
         resourceRule.withResourceNames(['tailscale-state']) +
-        resourceRule.withVerbs(['get', 'update', 'patch'])
+        resourceRule.withVerbs(['get', 'update', 'patch']),
       ]),
     roleBinding: rbac.roleBinding.new('tailscale') +
       rbac.roleBinding.withSubjects(rbac.subject.fromServiceAccount(self.serviceAccount)) +
@@ -51,9 +53,9 @@ local secret = kube.core.v1.secret;
       container.securityContext.capabilities.withAdd('NET_ADMIN'),
 
     tailscaleDeployment:
-      deployment.new(config.appName, 1, [self.tailscaleContainer], labels) +
-      deployment.spec.template.spec.withHostname(config.tailscaleDeviceHostname) +
-      deployment.spec.template.spec.withServiceAccountName(self.serviceAccount.metadata.name) +
-      deployment.spec.strategy.withType('Recreate'),
+      local templateSpec = deployment.spec.template.spec;
+      utils.newSinglePodDeployment(config.appName, [self.tailscaleContainer], labels) +
+      templateSpec.withHostname(config.tailscaleDeviceHostname) +
+      templateSpec.withServiceAccountName(self.serviceAccount.metadata.name),
   },
 }

@@ -19,6 +19,17 @@ local service = kube.core.v1.service;
     volume.withName(name) + 
     volume.persistentVolumeClaim.withClaimName(persistentVolumeClaim.metadata.name),
 
+  newSecretVolume(secretName, keyName, path)::
+    volume.withName(secretName) + 
+    volume.secret.withSecretName(secretName) +
+    volume.secret.withItems([{key: keyName, path: path}]),
+  
+  newNfsVolume(name, server, path, readOnly=false)::
+    volume.withName(name) + 
+    volume.nfs.withServer(server) +
+    volume.nfs.withPath(path) +
+    if readOnly then volume.nfs.withReadOnly(readOnly) else {},
+
   // Generate a standard single-replica deployment
   newSinglePodDeployment(name, containers, labels)::
     deployment.new(name, 1, containers, labels) +

@@ -35,15 +35,15 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
       app: appName,
     } + additionalLabels,
 
-    local configVolume = weebcluster.newConfigVolume('1Gi', labels),
+    local configVolume = weebcluster.newConfigVolume(configVolSize, labels),
     
-    local container = utils.newHttpContainer(appName, image, httpPortNumber) +
+    container:: utils.newHttpContainer(appName, image, httpPortNumber) +
     kube.core.v1.container.withVolumeMounts([configVolume.volumeMount]),
 
     // Rendered manifests
     persistentVolumeClaim: configVolume.configPVC,
 
-    deployment: utils.newSinglePodDeployment(appName, [container], labels) +
+    deployment: utils.newSinglePodDeployment(appName, [self.container], labels) +
       kube.apps.v1.deployment.spec.template.spec.withVolumes([configVolume.volume]),
 
     service: utils.newHttpService(appName, self.deployment.spec.template.metadata.labels),

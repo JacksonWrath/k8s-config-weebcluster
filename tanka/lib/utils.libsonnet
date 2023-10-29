@@ -8,6 +8,9 @@ local deployment = kube.apps.v1.deployment;
 local service = kube.core.v1.service;
 
 {
+  // Some generic constants
+  nginxIngressAllowAll: {'nginx.ingress.kubernetes.io/whitelist-source-range': '0.0.0.0/0'},
+
   // Generate a Container with an exposed port named 'http'
   newHttpContainer(name, image, portNumber)::
     local httpContainerPort = kube.core.v1.containerPort.newNamed(portNumber, 'http');

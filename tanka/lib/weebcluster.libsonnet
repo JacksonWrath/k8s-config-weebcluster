@@ -17,11 +17,11 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
   nginxIngressClass: 'nginx',
 
   // Inline Tanka environment
-  newTankaEnv(name, namespace, data):: {
+  newTankaEnv(envName, namespace, data):: {
     apiVersion: 'tanka.dev/v1alpha1',
     kind: 'Environment',
     metadata: {
-      name: name,
+      name: envName,
     },
     spec: {
       apiServer: 'https://aomine.bukkake.cafe:6443',

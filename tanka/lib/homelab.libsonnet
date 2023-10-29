@@ -7,6 +7,7 @@
       server: 'kirito.bukkake.cafe',
       poolPath: '/mnt/kirito-pool',
       shares: {
+        YoRHa: kirito.poolPath + '/YoRHa',
         LongTerm: kirito.poolPath + '/LongTerm',
       }
     },

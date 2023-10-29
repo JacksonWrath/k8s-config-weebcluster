@@ -35,16 +35,13 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
       app: appName,
     } + additionalLabels,
 
-    local configVolume = weebcluster.newConfigVolume(configVolSize, labels),
+    configVolume: weebcluster.newConfigVolume(configVolSize, labels),
     
     container:: utils.newHttpContainer(appName, image, httpPortNumber) +
-    kube.core.v1.container.withVolumeMounts([configVolume.volumeMount]),
-
-    // Rendered manifests
-    persistentVolumeClaim: configVolume.configPVC,
+    kube.core.v1.container.withVolumeMounts([self.configVolume.volumeMount]),
 
     deployment: utils.newSinglePodDeployment(appName, [self.container], labels) +
-      kube.apps.v1.deployment.spec.template.spec.withVolumes([configVolume.volume]),
+      kube.apps.v1.deployment.spec.template.spec.withVolumes([self.configVolume.volume]),
 
     service: utils.newHttpService(appName, self.deployment.spec.template.metadata.labels),
 
@@ -66,7 +63,7 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
   // Generate objects necessary for a standard "config" volume
   newConfigVolume(size, labels):: {
     local volumeName = labels.app + '-config',
-    configPVC:: weebcluster.newStandardPVC(volumeName, size, labels),
+    configPVC: weebcluster.newStandardPVC(volumeName, size, labels),
     volume:: utils.newVolumeFromPVC('config', self.configPVC),
     volumeMount:: kube.core.v1.volumeMount.new('config', '/config'),
   },

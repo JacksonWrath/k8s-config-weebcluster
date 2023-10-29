@@ -1,13 +1,10 @@
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: named-conf
-  namespace: bind-dns
-data:
-  named.conf: |
+{
+  'named.conf': |||
     include "/etc/bind/named.conf.options";
     include "/etc/bind/named.conf.local";
-  named.conf.options: |
+  |||,
+
+  'named.conf.options': |||
     options {
         directory "/var/cache/bind";
 
@@ -21,8 +18,12 @@ data:
             8.8.8.8;
         };
     };
-  named.conf.local: |
+  |||,
+
+  'named.conf.local': |||
     zone "bukkake.cafe" {
         type master;
         file "/var/bind/zones/bukkake.cafe";
     };
+  |||,
+}

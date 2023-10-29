@@ -1,10 +1,5 @@
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: zones-conf
-  namespace: bind-dns
-data:
-  bukkake.cafe: |
+{
+  'bukkake.cafe': |||
     $TTL 60 ; 1 minute
     @   SOA  bukkake.cafe. root.bukkake.cafe. (
           16  ; serial
@@ -19,3 +14,5 @@ data:
     *     CNAME   bukkake.cafe.
     ns1   A       10.2.69.10
     $INCLUDE /var/bind/zones-static/bukkake.cafe.static
+  |||,
+}

@@ -1,10 +1,5 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: zones-static-conf
-  namespace: bind-dns
-data:
-  bukkake.cafe.static: |
+{
+  'bukkake.cafe.static': |||
     alphonse    A       10.1.69.130
     aomine      A       10.1.69.101
     crs317      A       172.16.20.217
@@ -14,3 +9,5 @@ data:
     kuroko      A       10.1.69.103
     saitama     A       10.1.69.69
     vyos        A       172.17.0.2
+  |||,
+}

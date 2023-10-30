@@ -51,12 +51,14 @@ local service = kube.core.v1.service;
 
   // Creates a new Container with port 53 exposed on TCP and UDP
   newDnsContainer(name, image):: 
-    local dnsContainerPorts = [
-      kube.core.v1.containerPort.newNamed(53, 'dns-tcp'),
-      kube.core.v1.containerPort.newNamedUDP(53, 'dns-udp'),
-    ];
     kube.core.v1.container.new(name, image) +
-    kube.core.v1.container.withPorts(dnsContainerPorts),
+    kube.core.v1.container.withPorts(self.generateDnsContainerPorts()),
+
+  // Generates container ports exposing port 53 on TCP and UDP
+  generateDnsContainerPorts():: [
+    kube.core.v1.containerPort.newNamed(53, 'dns-tcp'),
+    kube.core.v1.containerPort.newNamedUDP(53, 'dns-udp'),
+  ],
 
   // Creates a new LoadBalancer Service to point at a workload with a DNS container created by "newDnsContainer()"
   // Sets externalTrafficPolicy to Local, and requests the provided IP from MetalLB (via annotation)

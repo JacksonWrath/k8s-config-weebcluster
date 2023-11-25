@@ -29,7 +29,7 @@ local plexEnvironment = {
   // Additional volumes on deployment
   local additionalVolumes = [
     utils.newVolumeFromPVC('plex-transcode', self.transcodingPvc),
-    utils.newNfsVolume('plex-media', homelab.nfs.kirito.server, homelab.nfs.kirito.shares.YoRHa + '/media'),
+    utils.newNfsVolume('plex-media', homelab.nfs.kirito.server, homelab.nfs.kirito.shares.YoRHa + '/media/plex'),
     kube.core.v1.volume.fromConfigMap('promtail-config', self.promtailConfigMap.metadata.name),
   ],
 

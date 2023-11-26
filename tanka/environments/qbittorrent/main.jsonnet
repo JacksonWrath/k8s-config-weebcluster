@@ -16,7 +16,7 @@ local namespace = 'qbittorrent';
 
 local qbittorrentEnvironment = {
   local appName = 'qbittorrent',
-  local qbImage = 'hotio/qbittorrent:release-4.5.2',
+  local qbImage = 'hotio/qbittorrent:release-4.6.1',
   local wgImage = 'ghcr.io/k8s-at-home/wireguard:v1.0.20210914',
   local ingressSubdomain = 'vash',
   local configVolSize = '1Gi',

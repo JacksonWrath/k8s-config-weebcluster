@@ -48,7 +48,7 @@ local qbittorrentEnvironment = {
     utils.newNfsVolume(
       name='qbittorrent-nfs',
       server=homelab.nfs.kirito.server,
-      path=homelab.nfs.kirito.shares.LongTerm + '/qbittorrent',
+      path=homelab.nfs.kirito.shares.YoRHa + '/media/qbittorrent',
     ),
   ],
 

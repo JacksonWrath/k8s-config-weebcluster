@@ -13,7 +13,7 @@ local namespace = 'plex';
 
 local plexEnvironment = {
   local appName = 'plex',
-  local plexImage = 'plexinc/pms-docker:1.32.5.7349-8f4248874',
+  local plexImage = 'plexinc/pms-docker:1.32.8.7639-fb6452ebf',
   local promtailImage = 'grafana/promtail:2.9.0',
   local ingressSubdomain = 'satsuki',
   local configVolSize = '100Gi',

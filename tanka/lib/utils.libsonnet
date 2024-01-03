@@ -6,6 +6,8 @@ local kube = import '1.27/main.libsonnet';
 local volume = kube.core.v1.volume;
 local deployment = kube.apps.v1.deployment;
 local service = kube.core.v1.service;
+local persistentVolume = kube.core.v1.persistentVolume;
+local persistentVolumeClaim = kube.core.v1.persistentVolumeClaim;
 
 {
   // Some generic constants
@@ -71,4 +73,20 @@ local service = kube.core.v1.service;
     service.spec.withType('LoadBalancer') +
     service.spec.withExternalTrafficPolicy('Local') +
     service.metadata.withAnnotations({'metallb.universe.tf/loadBalancerIPs': loadBalancerIP}),
+
+  newNfsPV(name, mountOptions=[], server, path, size)::
+    persistentVolume.new(name) +
+      persistentVolume.spec.withStorageClassName('nfs') +
+      persistentVolume.spec.withAccessModes('ReadWriteMany') +
+      persistentVolume.spec.withMountOptions(mountOptions) +
+      persistentVolume.spec.withCapacity({storage: size}) +
+      persistentVolume.spec.nfs.withServer(server) +
+      persistentVolume.spec.nfs.withPath(path),
+    
+  newNfsPVCFromPV(name, pv)::
+    persistentVolumeClaim.new(name) +
+      persistentVolumeClaim.spec.withVolumeName(pv.metadata.name) +
+      persistentVolumeClaim.spec.withStorageClassName('nfs') +
+      persistentVolumeClaim.spec.withAccessModes(['ReadWriteMany']) +
+      persistentVolumeClaim.spec.resources.withRequests(pv.spec.capacity),
 }

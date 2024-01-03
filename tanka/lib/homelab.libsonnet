@@ -9,7 +9,8 @@
       shares: {
         YoRHa: kirito.poolPath + '/YoRHa',
         LongTerm: kirito.poolPath + '/LongTerm',
-      }
+      },
+      totalSize: '58Ti',
     },
   },
 }

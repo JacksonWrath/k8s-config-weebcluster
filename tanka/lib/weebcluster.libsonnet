@@ -1,5 +1,6 @@
 local kube = import '1.27/main.libsonnet';
 local utils = import 'utils.libsonnet';
+local homelab = import 'homelab.libsonnet';
 
 // Kubernetes API object variables
 local pvc = kube.core.v1.persistentVolumeClaim;
@@ -91,5 +92,24 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
   // Create an standard Ingress pointed at the 'http' port of a given service
   newStandardHttpIngress(name, subdomain, service, pathPrefix='/')::
     local servicePort = kube.core.v1.servicePort.withName('http');
-    self.newStandardIngress(name, subdomain, service, servicePort, pathPrefix)
+    self.newStandardIngress(name, subdomain, service, servicePort, pathPrefix),
+
+  // Creates several resources needed for a PV/PVC pointed at the YoRHa NFS share (with optional subpath)
+  newYoRHaNfsVolume(appName, subPath=''):: {
+    local subPathName = if subPath == '' then '-YoRHa' else std.strReplace(subPath, '/', '-'),
+    nfsPV: utils.newNfsPV(
+      name=appName + '-nfs' + subPathName + '-pv',
+      server=homelab.nfs.kirito.server,
+      path=homelab.nfs.kirito.shares.YoRHa + subPath,
+      size=homelab.nfs.kirito.totalSize),
+    nfsPVC: utils.newNfsPVCFromPV(appName + '-nfs' + subPathName, self.nfsPV),
+    volume:: utils.newVolumeFromPVC('nfs' + subPathName, self.nfsPVC),
+    volumeMount:: kube.core.v1.volumeMount.new(self.volume.name, '/data'),
+  },
+
+  // The Servarr family of apps require that NFS be mounted with 'nolock' set. 
+  newYoRHaNfsVolumeNolock(appName, subPath=''):: 
+    self.newYoRHaNfsVolume(appName, subPath) + {
+      nfsPV+: kube.core.v1.persistentVolume.spec.withMountOptions(['nolock'])
+    },
 }

@@ -1,7 +1,7 @@
 {
   'bukkake.cafe.static': |||
-    alphonse    A       10.1.69.130
     aomine      A       10.1.69.101
+    asuna       A       10.1.69.120
     crs317      A       172.16.20.217
     firewall    A       172.17.0.1
     kagami      A       10.1.69.102

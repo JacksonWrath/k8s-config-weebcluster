@@ -99,9 +99,9 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
     local subPathName = if subPath == '' then '-YoRHa' else std.strReplace(subPath, '/', '-'),
     nfsPV: utils.newNfsPV(
       name=appName + '-nfs' + subPathName + '-pv',
-      server=homelab.nfs.kirito.server,
-      path=homelab.nfs.kirito.shares.YoRHa + subPath,
-      size=homelab.nfs.kirito.totalSize),
+      server=homelab.nfs.asuna.server,
+      path=homelab.nfs.asuna.shares.YoRHa + subPath,
+      size=homelab.nfs.asuna.totalSize),
     nfsPVC: utils.newNfsPVCFromPV(appName + '-nfs' + subPathName, self.nfsPV),
     volume:: utils.newVolumeFromPVC('nfs' + subPathName, self.nfsPVC),
     volumeMount:: kube.core.v1.volumeMount.new(self.volume.name, '/data'),

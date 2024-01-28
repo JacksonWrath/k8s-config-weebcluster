@@ -1,0 +1,100 @@
+#!.venv/bin/python
+
+# expects to run from repo root
+
+import json
+import _jsonnet  # type: ignore
+import requests
+import re
+
+from typing import TypeAlias
+
+IMAGES_JSONNET_PATH = 'tanka/lib/images.libsonnet'
+
+HOTIO_RELEASE_REGEX = r'release-(?:\d+\.)+\d+'
+TAG_REGEX = {
+    'prowlarr': HOTIO_RELEASE_REGEX,
+    'sonarr': HOTIO_RELEASE_REGEX,
+    'radarr': HOTIO_RELEASE_REGEX,
+    'qbittorrent': HOTIO_RELEASE_REGEX,
+    'promtail': r'\d+\.\d+\.\d+',
+    'tautulli': r'v\d+\.\d+\.\d+',
+}
+
+ImageDef: TypeAlias = dict[str, str]
+TagData: TypeAlias = dict[str, str]
+# The TagData TypeAlias is not strictly correct; there can be ints, but I'm not currently using them.
+# Will expand this out if needed later
+
+
+def main():
+    images: dict[str, ImageDef] = json.loads(_jsonnet.evaluate_file(IMAGES_JSONNET_PATH))['images']
+    for app, detail in images.items():
+        image = detail['image']
+        tag = detail['followTag']
+        check_image_update(app, image, tag)
+
+
+def check_image_update(app: str, current_image: str, tag_to_check: str):
+    image_id, current_tag = current_image.rsplit(":", 1)
+    owner, image_name = image_id.rsplit("/", 1)
+
+    tags: dict[str, TagData] = {}
+
+    # Query image repo in pages until we find the tag we want
+    # Possible edge-case: tag we want is updated after another versioned tag, and that versioned tag is on
+    # the next page. If I ever notice that happen, I'll add another page query here.
+    page_size = 20  # Most images don't have a lot of tags
+    page_num = 1
+    page_max = 5  # ...but sometimes they publish a new tag for every fucking commit
+
+    while tag_to_check not in tags.keys() and page_num <= page_max:
+        tags_url = f'https://hub.docker.com/v2/namespaces/{owner}/repositories/{image_name}/tags' + \
+                    f'?page_size={page_size}' + \
+                    f'&page={page_num}'
+        response = requests.get(tags_url)
+        tags_list: list[TagData] = json.loads(response.text)['results']
+        # Add the list into a dict keyed on the tag's name for ease of use later
+        for tag_data in tags_list:
+            if 'digest' in tag_data.keys():
+                # idk if a missing digest means a tag is deprecated or something, but it can occur. Skip those.
+                tags[tag_data['name']] = tag_data
+        page_num += 1
+
+    # Verify we got the tag
+    if tag_to_check not in tags.keys():
+        raise Exception(f"so many fucking tags and still couldn't find tag '{tag_to_check}'")
+
+    # Loop through the tags and find ones with digests matching the tag we want
+    # The regex match is used to filter out duplicates for some images
+    check_digest = tags[tag_to_check]['digest']
+    duplicate_tags = []
+    for tag, data in tags.items():
+        if data['digest'] == check_digest and \
+           tag != tag_to_check and \
+           tag != 'latest' and \
+           re.match(TAG_REGEX.get(app, '.*'), tag):
+            duplicate_tags.append(tag)
+
+    # Did that work?
+    if not len(duplicate_tags):
+        # If here, this app sucks and doesn't have a tag that follows versioned releases.
+        # Resort to checking all tags that match the regex to see if any are newer than the current tag
+        newest_tag_date = tags[current_tag]['tag_last_pushed']
+        newest_tag = None
+        for tag, data in tags.items():
+            if re.match(TAG_REGEX.get(app, '.*'), tag) and 'tag_last_pushed' in data.keys():
+                date = data['tag_last_pushed']
+                if date > newest_tag_date:
+                    newest_tag_date = date
+                    newest_tag = tag
+        if newest_tag:
+            duplicate_tags.append(newest_tag)
+
+    # Check if we're already using one of the tags found
+    if current_tag not in duplicate_tags:
+        print(f"Update: {image_id}:{current_tag} -> {duplicate_tags}")
+
+
+if __name__ == "__main__":
+    main()

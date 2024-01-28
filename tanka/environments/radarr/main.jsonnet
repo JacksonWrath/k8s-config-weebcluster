@@ -12,7 +12,7 @@ local namespace = 'radarr';
 
 local radarrEnvironment = {
   local appName = 'radarr',
-  local image = 'hotio/radarr:release-5.1.3.8246',
+  local image = weebcluster.images.radarr.image,
   local ingressSubdomain = 'nozomi',
   local configVolSize = '10Gi',
   local httpPortNumber = 7878,

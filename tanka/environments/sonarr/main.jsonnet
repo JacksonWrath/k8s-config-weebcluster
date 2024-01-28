@@ -12,7 +12,7 @@ local namespace = 'sonarr';
 
 local sonarrEnvironment = {
   local appName = 'sonarr',
-  local image = 'hotio/sonarr:release-3.0.10.1567',
+  local image = weebcluster.images.sonarr.image,
   local ingressSubdomain = 'nozaki',
   local configVolSize = '10Gi',
   local httpPortNumber = 8989,

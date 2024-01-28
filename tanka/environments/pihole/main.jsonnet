@@ -1,6 +1,7 @@
 local kube = import '1.27/main.libsonnet';
 local weebcluster = import 'weebcluster.libsonnet';
 local utils = import 'utils.libsonnet';
+local homelab = import 'homelab.libsonnet';
 
 // API object aliases
 local volumeMount = kube.core.v1.volumeMount;
@@ -17,8 +18,8 @@ local namespace = 'pihole';
 
 local piholeEnvironment = {
   local appName = 'pihole',
-  local prepullImage = 'pihole/pihole:2023.05.2', // Update this one separately first!
-  local piholeImage = 'pihole/pihole:2023.05.2',
+  local prepullImage = weebcluster.images.pihole.prepullImage,
+  local piholeImage = weebcluster.images.pihole.image,
   local ingressSubdomain = 'saika',
   local configVolSize = '10Gi',
   local httpPortNumber = 80,

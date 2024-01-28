@@ -13,8 +13,8 @@ local namespace = 'plex';
 
 local plexEnvironment = {
   local appName = 'plex',
-  local plexImage = 'plexinc/pms-docker:1.32.8.7639-fb6452ebf',
-  local promtailImage = 'grafana/promtail:2.9.0',
+  local plexImage = weebcluster.images.plex.image,
+  local promtailImage = weebcluster.images.promtail.image,
   local ingressSubdomain = 'satsuki',
   local configVolSize = '100Gi',
   local httpPortNumber = 32400,

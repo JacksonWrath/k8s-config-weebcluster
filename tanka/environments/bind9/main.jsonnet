@@ -15,7 +15,7 @@ local namespace = 'bind-dns';
 
 local bindEnvironment = {
   local appName = 'bind9',
-  local image = 'ubuntu/bind9:latest',
+  local image = 'ubuntu/bind9:latest', // Ubuntu constantly pushes to all tags, rather than freezing them at a version.
   local dnsIp = '10.2.69.10',
 
   local labels = {

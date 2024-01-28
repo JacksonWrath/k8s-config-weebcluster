@@ -13,6 +13,11 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
   local weebcluster = self,
   ingressDomainSuffix: 'bukkake.cafe',
 
+  // Import images lib so apps don't need to import it separately
+  // It is a separate lib to make scripting updates to it easier
+  local imageLib = import 'images.libsonnet',
+  images: imageLib.images,
+
   // Cluster constants
   nvme_storage_class: 'nvme-rook-ceph',
   nginxIngressClass: 'nginx',

@@ -12,7 +12,7 @@ local namespace = 'prowlarr';
 
 local prowlarrEnvironment = {
   local appName = 'prowlarr',
-  local image = 'hotio/prowlarr:release-1.10.5.4116',
+  local image = weebcluster.images.prowlarr.image,
   local ingressSubdomain = 'riko',
   local configVolSize = '1Gi',
   local httpPortNumber = 9696,

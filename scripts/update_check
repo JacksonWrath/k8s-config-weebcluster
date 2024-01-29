@@ -3,10 +3,14 @@
 # expects to run from repo root
 
 import json
+import subprocess
 import _jsonnet  # type: ignore
 import requests
 import re
 
+from datetime import date
+
+# Typing imports
 from typing import TypeAlias
 
 IMAGES_JSONNET_PATH = 'tanka/lib/images.libsonnet'
@@ -28,15 +32,48 @@ TagData: TypeAlias = dict[str, str]
 
 
 def main():
+    check_for_image_updates()
+
+
+# Runs through the images lib and checks for updates for each image
+# "followTag" is a tag that *should* follow a versioned release. Poll the tags of the image to find the version tag
+# that matches its digest and use that.
+# Once done, format the results back through jsonnetfmt and write to the lib file
+# If any of the images match multiple tags, the script aborts without writing anything
+def check_for_image_updates():
     images: dict[str, ImageDef] = json.loads(_jsonnet.evaluate_file(IMAGES_JSONNET_PATH))['images']
+    will_update_file = True
     for app, detail in images.items():
+        if date.fromisoformat(detail.get('lastChecked', "1970-01-01")) == date.today():
+            continue
         image = detail['image']
         tag = detail['followTag']
-        check_image_update(app, image, tag)
+        image_updates = get_image_update(app, image, tag)
+        # Check if we found a unique image to use
+        if len(image_updates) == 1:
+            # Special case for Pihole, since it currently pre-pulls with a DaemonSet
+            if app == 'pihole':
+                images[app]['prepullImage'] = image_updates[0]
+            else:
+                images[app]['image'] = image_updates[0]
+        else:
+            print(f"Multiple tags found: {image} -> {image_updates}")
+            will_update_file = False
+        images[app]['lastChecked'] = str(date.today())
+
+    if will_update_file:
+        output = jsonnetfmt_dumps({'images': images})
+        with open(IMAGES_JSONNET_PATH, "w") as f:
+            f.write(output)
+    else:
+        print("Some images had multiple possible tags. Not updating images lib.")
+        exit(1)
 
 
-def check_image_update(app: str, current_image: str, tag_to_check: str):
+# Check for update to a single image
+def get_image_update(app: str, current_image: str, tag_to_check: str) -> list[str]:
     image_id, current_tag = current_image.rsplit(":", 1)
+    image_tag_template = image_id + ":{}"
     owner, image_name = image_id.rsplit("/", 1)
 
     tags: dict[str, TagData] = {}
@@ -60,40 +97,41 @@ def check_image_update(app: str, current_image: str, tag_to_check: str):
                 # idk if a missing digest means a tag is deprecated or something, but it can occur. Skip those.
                 tags[tag_data['name']] = tag_data
         page_num += 1
-
     # Verify we got the tag
     if tag_to_check not in tags.keys():
-        raise Exception(f"so many fucking tags and still couldn't find tag '{tag_to_check}'")
+        raise Exception(f"scanned so many fucking tags and still couldn't find tag '{tag_to_check}' for '{image_id}")
 
     # Loop through the tags and find ones with digests matching the tag we want
     # The regex match is used to filter out duplicates for some images
     check_digest = tags[tag_to_check]['digest']
-    duplicate_tags = []
+    potential_images = []
     for tag, data in tags.items():
         if data['digest'] == check_digest and \
            tag != tag_to_check and \
            tag != 'latest' and \
            re.match(TAG_REGEX.get(app, '.*'), tag):
-            duplicate_tags.append(tag)
+            potential_images.append(image_tag_template.format(tag))
 
     # Did that work?
-    if not len(duplicate_tags):
+    if not len(potential_images):
         # If here, this app sucks and doesn't have a tag that follows versioned releases.
         # Resort to checking all tags that match the regex to see if any are newer than the current tag
         newest_tag_date = tags[current_tag]['tag_last_pushed']
-        newest_tag = None
+        newest_tag = current_tag
         for tag, data in tags.items():
             if re.match(TAG_REGEX.get(app, '.*'), tag) and 'tag_last_pushed' in data.keys():
                 date = data['tag_last_pushed']
                 if date > newest_tag_date:
                     newest_tag_date = date
                     newest_tag = tag
-        if newest_tag:
-            duplicate_tags.append(newest_tag)
+        potential_images.append(image_tag_template.format(newest_tag))
+    return potential_images
 
-    # Check if we're already using one of the tags found
-    if current_tag not in duplicate_tags:
-        print(f"Update: {image_id}:{current_tag} -> {duplicate_tags}")
+
+# Wrapper for running the output of json.dumps through jsonnetfmt
+def jsonnetfmt_dumps(input: dict) -> str:
+    json_str = json.dumps(input, indent=2, sort_keys=True)
+    return subprocess.run(["jsonnetfmt", "-"], input=json_str, text=True, capture_output=True).stdout
 
 
 if __name__ == "__main__":

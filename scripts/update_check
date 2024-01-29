@@ -14,6 +14,7 @@ from datetime import date
 from typing import TypeAlias
 
 IMAGES_JSONNET_PATH = 'tanka/lib/images.libsonnet'
+UPGRADE_PLAN_PATH = 'cluster-configuration/k3s-upgrade-plan.yaml'
 
 HOTIO_RELEASE_REGEX = r'release-(?:\d+\.)+\d+'
 TAG_REGEX = {
@@ -33,6 +34,7 @@ TagData: TypeAlias = dict[str, str]
 
 def main():
     check_for_image_updates()
+    check_for_k3s_update()
 
 
 # Runs through the images lib and checks for updates for each image
@@ -126,6 +128,62 @@ def get_image_update(app: str, current_image: str, tag_to_check: str) -> list[st
                     newest_tag = tag
         potential_images.append(image_tag_template.format(newest_tag))
     return potential_images
+
+
+def check_for_k3s_update():
+    current_version = get_current_k3s_version()
+    new_version = get_desired_k3s_version(current_version)
+    if new_version != current_version:
+        write_upgrade_plan_file(new_version)
+
+
+# Queries k3s' GitHub repo tags and looks for a later release such that I'm 1 minor version behind latest
+# (It's not uncommon I run into things that don't support bleeding edge k8s)
+# This won't work if the "major" version changes, or if (more likely) they stop pretending it ever will and drop it
+def get_desired_k3s_version(current_version: str) -> str:
+    url = 'https://api.github.com/repos/k3s-io/k3s/tags'
+    response = requests.get(url, headers={'Accept': 'application/vnd.github+json'})
+    tags_list: list[TagData] = json.loads(response.text)
+
+    current_minor = int(current_version[3:5])
+    latest = current_version
+    latest_minor = current_minor
+    for tag in sorted(tags_list, key=lambda x: x['name'], reverse=True):
+        this_tag = tag['name']
+        if "rc" not in this_tag:
+            if this_tag > latest:
+                latest = this_tag
+                latest_minor = int(latest[3:5])
+            else:
+                minor_version = int(this_tag[3:5])  # assuming it starts with "v1.YY..."
+                if latest_minor-1 == minor_version and latest_minor > current_minor:
+                    # loop starts from latest tag. If we've found a tag that's one behind the latest, but newer than
+                    # current, then we can stop. That's what we want.
+                    return this_tag
+    # If here, there's no later [desired] version; return current
+    return current_version
+
+
+# Gets current version of k3s from the upgrade plan file
+def get_current_k3s_version() -> str:
+    with open(UPGRADE_PLAN_PATH, "r") as file:
+        for line in file:
+            if 'version' in line and '+k3s1' in line:
+                return line.split(':')[1].strip()
+    raise Exception("Couldn't find current version from upgrade plan file")
+
+
+# Writes the provided version to the upgrade plan file
+def write_upgrade_plan_file(new_version: str):
+    new_file_contents = ""
+    with open(UPGRADE_PLAN_PATH, "r+") as file:
+        for line in file:
+            if 'version' in line and '+k3s1' in line:
+                new_file_contents += f"  version: {new_version}\n"
+            else:
+                new_file_contents += line
+        file.seek(0)
+        file.write(new_file_contents)
 
 
 # Wrapper for running the output of json.dumps through jsonnetfmt

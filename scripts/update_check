@@ -63,7 +63,9 @@ def check_for_image_updates():
         else:
             print(f"Multiple tags found: {image} -> {image_updates}")
             will_update_file = False
-        images[app]['lastChecked'] = str(date.today())
+        # Commented this out because if I automate this, I don't want a new commit every day from the date change
+        # Can just uncomment for rapid testing
+        # images[app]['lastChecked'] = str(date.today())
 
     if will_update_file:
         output = jsonnetfmt_dumps({'images': images})

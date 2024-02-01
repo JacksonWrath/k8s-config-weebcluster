@@ -22,6 +22,7 @@ loki + gateway {
     ruler_pvc_class: weebcluster.nvme_storage_class,
     compactor_pvc_class: weebcluster.nvme_storage_class,
     ingester_data_disk_class: weebcluster.nvme_storage_class,
+    ingester_wal_disk_class: weebcluster.nvme_storage_class,
 
     loki+: {
       schema_config: {

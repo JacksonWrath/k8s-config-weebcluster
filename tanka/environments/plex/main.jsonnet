@@ -1,4 +1,4 @@
-local kube = import '1.27/main.libsonnet';
+local kube = import 'k.libsonnet';
 local weebcluster = import 'weebcluster.libsonnet';
 local homelab = import 'homelab.libsonnet';
 local utils = import 'utils.libsonnet';

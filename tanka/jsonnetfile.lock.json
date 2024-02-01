@@ -18,7 +18,7 @@
           "subdir": "consul"
         }
       },
-      "version": "d2347c7f9d22b7745a39dd521f00dbbfb9bd9944",
+      "version": "f31ba2e68d0cc8acdf7acd5c7b181a6b09aeb4c3",
       "sum": "Po3c1Ic96ngrJCtOazic/7OsLkoILOKZWXWyZWl+od8="
     },
     {
@@ -28,7 +28,7 @@
           "subdir": "jaeger-agent-mixin"
         }
       },
-      "version": "d2347c7f9d22b7745a39dd521f00dbbfb9bd9944",
+      "version": "f31ba2e68d0cc8acdf7acd5c7b181a6b09aeb4c3",
       "sum": "NyRKfJyqLhB9oHLpr+b47b5yiB3BuBB9ZmRcVk0IVEk="
     },
     {
@@ -38,7 +38,7 @@
           "subdir": "ksonnet-util"
         }
       },
-      "version": "d2347c7f9d22b7745a39dd521f00dbbfb9bd9944",
+      "version": "f31ba2e68d0cc8acdf7acd5c7b181a6b09aeb4c3",
       "sum": "0y3AFX9LQSpfWTxWKSwoLgbt0Wc9nnCwhMH2szKzHv0="
     },
     {
@@ -48,7 +48,7 @@
           "subdir": "memcached"
         }
       },
-      "version": "d2347c7f9d22b7745a39dd521f00dbbfb9bd9944",
+      "version": "f31ba2e68d0cc8acdf7acd5c7b181a6b09aeb4c3",
       "sum": "Cc715Y3rgTuimgDFIw+FaKzXSJGRYwt1pFTMbdrNBD8="
     },
     {
@@ -58,8 +58,8 @@
           "subdir": "production/ksonnet/loki"
         }
       },
-      "version": "89829065e7b0a95791d4249cd7840c45ed09f78e",
-      "sum": "JjDXGR74b4XaotBwx81p04tTIRTQJUReRuPsQ5aYwuU="
+      "version": "e470258113697edd5520c214f866a357762ed814",
+      "sum": "mbxPqBkSUlah1G6AY6Z0FknN8O/m/VGANtvIRq4ssLE="
     },
     {
       "source": {
@@ -68,8 +68,8 @@
           "subdir": "production/ksonnet/promtail"
         }
       },
-      "version": "89829065e7b0a95791d4249cd7840c45ed09f78e",
-      "sum": "RdDOhCxK2J0DuQLQUy1QkF8rtbmQ3PZVepWu8s5osJw="
+      "version": "e470258113697edd5520c214f866a357762ed814",
+      "sum": "SrZXHDjKp9Tk3huA4Od8z/QjeX4SeSR3kI9ZWcbbDjo="
     },
     {
       "source": {
@@ -78,18 +78,18 @@
           "subdir": "doc-util"
         }
       },
-      "version": "fd8de9039b3c06da77d635a3a8289809a5bfb542",
-      "sum": "mFebrE9fhyAKW4zbnidcjVFupziN5LPA/Z7ii94uCzs="
+      "version": "6ac6c69685b8c29c54515448eaca583da2d88150",
+      "sum": "BrAL/k23jq+xy9oA7TWIhUx07dsA/QLm3g7ktCwe//U="
     },
     {
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/k8s-libsonnet.git",
-          "subdir": "1.27"
+          "subdir": "1.28"
         }
       },
-      "version": "44a9f3d21c089a01f62b22e25bdf553f488a74e8",
-      "sum": "UUehweIZbfxH3XA3iVc7D2U8NTtvOqjEKI7z/Cd6kzE="
+      "version": "3e32f80d1493d1579d273d1522af1fae2cc7c97f",
+      "sum": "3MdwG7YiDlyZHbuSnN52Kvv4XZ3JmYuNKjXx7ocoChQ="
     }
   ],
   "legacyImports": false

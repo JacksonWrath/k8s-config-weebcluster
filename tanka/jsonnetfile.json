@@ -26,7 +26,7 @@
           "subdir": "production/ksonnet/loki"
         }
       },
-      "version": "main"
+      "version": "v2.9.4"
     },
     {
       "source": {
@@ -35,7 +35,7 @@
           "subdir": "production/ksonnet/promtail"
         }
       },
-      "version": "main"
+      "version": "v2.9.4"
     },
     {
       "source": {
@@ -50,7 +50,7 @@
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/k8s-libsonnet.git",
-          "subdir": "1.27"
+          "subdir": "1.28"
         }
       },
       "version": "main"

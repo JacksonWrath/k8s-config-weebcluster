@@ -1,4 +1,4 @@
-local kube = import '1.27/main.libsonnet';
+local kube = import 'k.libsonnet';
 local utils = import 'utils.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
 

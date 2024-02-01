@@ -1,6 +1,6 @@
 // This library is a set of agnostic utility functions that work without knowledge of the specific k8s environment.
 
-local kube = import '1.27/main.libsonnet';
+local kube = import 'k.libsonnet';
 
 // API objects
 local volume = kube.core.v1.volume;

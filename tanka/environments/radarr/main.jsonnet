@@ -1,7 +1,7 @@
 local weebcluster = import 'weebcluster.libsonnet';
 local utils = import 'utils.libsonnet';
 local homelab = import 'homelab.libsonnet';
-local kube = import '1.27/main.libsonnet';
+local kube = import 'k.libsonnet';
 
 // API object aliases
 local container = kube.core.v1.container;

@@ -2,7 +2,7 @@ local weebcluster = import 'weebcluster.libsonnet';
 local utils = import 'utils.libsonnet';
 local homelab = import 'homelab.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
-local kube = import '1.27/main.libsonnet';
+local kube = import 'k.libsonnet';
 
 // API object aliases
 local podTemplateSpec = kube.apps.v1.deployment.spec.template.spec;

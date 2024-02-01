@@ -15,6 +15,7 @@ from typing import TypeAlias
 
 IMAGES_JSONNET_PATH = 'tanka/lib/images.libsonnet'
 UPGRADE_PLAN_PATH = 'cluster-configuration/k3s-upgrade-plan.yaml'
+JSONNETFILE_PATH = 'tanka/jsonnetfile.json'
 
 HOTIO_RELEASE_REGEX = r'release-(?:\d+\.)+\d+'
 TAG_REGEX = {
@@ -35,6 +36,7 @@ TagData: TypeAlias = dict[str, str]
 def main():
     check_for_image_updates()
     check_for_k3s_update()
+    check_for_loki_update()
 
 
 # Runs through the images lib and checks for updates for each image
@@ -132,6 +134,7 @@ def get_image_update(app: str, current_image: str, tag_to_check: str) -> list[st
     return potential_images
 
 
+# Checks for an update to k3s, and updates the upgrade plan file if so
 def check_for_k3s_update():
     current_version = get_current_k3s_version()
     new_version = get_desired_k3s_version(current_version)
@@ -143,14 +146,11 @@ def check_for_k3s_update():
 # (It's not uncommon I run into things that don't support bleeding edge k8s)
 # This won't work if the "major" version changes, or if (more likely) they stop pretending it ever will and drop it
 def get_desired_k3s_version(current_version: str) -> str:
-    url = 'https://api.github.com/repos/k3s-io/k3s/tags'
-    response = requests.get(url, headers={'Accept': 'application/vnd.github+json'})
-    tags_list: list[TagData] = json.loads(response.text)
-
     current_minor = int(current_version[3:5])
     latest = current_version
     latest_minor = current_minor
-    for tag in sorted(tags_list, key=lambda x: x['name'], reverse=True):
+    tags = sort_tags(get_github_repo_tags('k3s-io/k3s'))
+    for tag in tags:
         this_tag = tag['name']
         if "rc" not in this_tag:
             if this_tag > latest:
@@ -188,10 +188,75 @@ def write_upgrade_plan_file(new_version: str):
         file.write(new_file_contents)
 
 
+# Checks for an update for Loki (and Promtail, in the same repo)
+# Updates the jsonnetfile.json if one is found
+def check_for_loki_update():
+    current_version = get_current_loki_version()
+    new_version = get_latest_loki_version()
+    if new_version != current_version:
+        write_new_loki_version(new_version)
+
+
+# Gets current Loki version from jsonnetfile.json
+def get_current_loki_version() -> str:
+    with open(JSONNETFILE_PATH, "r") as file:
+        jsonnetfile: dict = json.load(file)
+        dependencies: list[dict] = jsonnetfile['dependencies']
+        for item in dependencies:
+            try:
+                if 'loki.git' in item['source']['git']['remote']:
+                    return item['version']
+            except KeyError:
+                # dependency isn't set up like expected for Loki; safe to skip
+                continue
+    print("WARNING - couldn't get current Loki version from jsonnetfile.json")
+    return ''
+
+
+# Gets the latest Loki release version
+def get_latest_loki_version() -> str:
+    tags = sort_tags(get_github_repo_tags('grafana/loki'))
+    for tag in tags:
+        # Loki uses "vX.Y.Z" naming semantics. It's almost certainly the first one, but still check for the 'v'
+        this_tag = tag['name']
+        if re.match(r"^v\d+\.\d+\.\d+$", this_tag):
+            return this_tag
+    raise Exception(f"Didn't find a valid tag for Loki =( List of tags returned from GitHub:\n{tags}")
+
+
+# Writes the given Loki version to jsonnetfile.json
+def write_new_loki_version(new_version: str):
+    with open(JSONNETFILE_PATH, "r+") as file:
+        jsonnetfile: dict[str, list[dict]] = json.load(file)  # typing not 100% true but good enough
+        for item in jsonnetfile['dependencies']:
+            try:
+                if 'loki.git' in item['source']['git']['remote']:
+                    item['version'] = new_version
+            except KeyError:
+                # dependency isn't set up like expected for Loki; safe to skip
+                continue
+        file.seek(0)
+        json.dump(jsonnetfile, file, indent=2)
+
+
+# Helper for getting tags from GitHub repo
+def get_github_repo_tags(repo: str) -> list[TagData]:
+    url = f'https://api.github.com/repos/{repo}/tags'
+    response = requests.get(url, headers={'Accept': 'application/vnd.github+json'})
+    tags_list: list[TagData] = json.loads(response.text)
+    return tags_list
+
+
 # Wrapper for running the output of json.dumps through jsonnetfmt
 def jsonnetfmt_dumps(input: dict) -> str:
     json_str = json.dumps(input, indent=2, sort_keys=True)
     return subprocess.run(["jsonnetfmt", "-"], input=json_str, text=True, capture_output=True).stdout
+
+
+# Wrapper for sorting tags by name, defaulted to reverse order
+# (since usually its version numbers, where larger = newer)
+def sort_tags(sort_me: list[TagData], reverse=True) -> list[TagData]:
+    return sorted(sort_me, key=lambda x: x['name'], reverse=reverse)
 
 
 if __name__ == "__main__":

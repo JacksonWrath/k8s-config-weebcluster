@@ -101,7 +101,9 @@ def get_image_update(app: str, current_image: str, tag_to_check: str) -> list[st
         page_num += 1
     # Verify we got the tag
     if tag_to_check not in tags.keys():
-        raise Exception(f"scanned so many fucking tags and still couldn't find tag '{tag_to_check}' for '{image_id}")
+        # As of this writing, this is purely for Promtail. They publish like 20 new tags per day.
+        print(f"WARNING! {app} is stupid and has WAY too many tags. Couldn't find a tag to use, so skipping.")
+        return [current_image]
 
     # Loop through the tags and find ones with digests matching the tag we want
     # The regex match is used to filter out duplicates for some images

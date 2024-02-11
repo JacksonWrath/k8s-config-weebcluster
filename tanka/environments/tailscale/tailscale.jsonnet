@@ -15,6 +15,8 @@ local secret = kube.core.v1.secret;
       app: config.appName,
     },
 
+    namespace: kube.core.v1.namespace.new(config.namespace),
+
     // RBAC
     serviceAccount: kube.core.v1.serviceAccount.new('tailscale') +
       // Namespace needs to be added because "withSubjects()" on the roleBinding expects it
@@ -43,6 +45,7 @@ local secret = kube.core.v1.secret;
 
     local baseEnv = {
       TS_KUBE_SECRET: 'tailscale-state',
+      TS_USERSPACE: 'false',
     } + config.envMixin,
     local tailscaleSecretEnv =
       kube.core.v1.envFromSource.secretRef.withName(self.tailscaleSecret.metadata.name),

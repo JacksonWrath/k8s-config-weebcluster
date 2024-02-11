@@ -1,13 +1,20 @@
+local homelab = import 'homelab.libsonnet';
+
+local ipMap = {
+  asuna: homelab.nfs.asuna.ipv4,
+  kirito: homelab.nfs.kirito.ipv4,
+};
+
 {
   'bukkake.cafe.static': |||
     aomine      A       10.1.69.101
-    asuna       A       10.1.69.120
+    asuna       A       %(asuna)s
     crs317      A       172.16.20.217
     firewall    A       172.17.0.1
     kagami      A       10.1.69.102
-    kirito      A       10.1.69.121
+    kirito      A       %(kirito)s
     kuroko      A       10.1.69.103
     saitama     A       10.1.69.69
     vyos        A       172.17.0.2
-  |||,
+  ||| % ipMap,
 }

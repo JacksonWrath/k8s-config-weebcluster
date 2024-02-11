@@ -11,12 +11,14 @@
     
     asuna: {
       server: 'asuna.bukkake.cafe',
+      ipv4: '10.1.69.120',
       poolPath: '/mnt/asuna-pool/sao',
       shares: nfs.generate_shares(self.poolPath),
       totalSize: '58Ti',
     },
     kirito: {
       server: 'kirito.bukkake.cafe',
+      ipv4: '10.1.69.121',
       poolPath: '/mnt/kirito-pool',
       shares: nfs.generate_shares(self.poolPath),
       totalSize: '58Ti',

@@ -7,7 +7,10 @@ local deployment = kube.apps.v1.deployment;
 local secret = kube.core.v1.secret;
 
 {
-  generate(config):: {
+  generate(input_config):: {
+    local config = input_config + {
+      image: 'ghcr.io/tailscale/tailscale:latest',
+    },
     local labels = {
       app: config.appName,
     },
@@ -36,20 +39,18 @@ local secret = kube.core.v1.secret;
 
     // Resources
     tailscaleSecret: secret.new('tailscale-auth', '') + {data::''} + // Override data field to be hidden
-      secret.withStringData(private.tailscale.secret_stringData),
+      secret.withStringData(config.secretStringData),
 
     local baseEnv = {
       TS_KUBE_SECRET: 'tailscale-state',
-      TS_EXTRA_ARGS: '--advertise-exit-node',
-      TS_ROUTES: config.advertiseRoutes,
-    },
-    local tailscaleSecretEnv = 
-      kube.core.v1.envVar.fromSecretRef('TS_AUTH_KEY', self.tailscaleSecret.metadata.name, 'TS_AUTHKEY'),
+    } + config.envMixin,
+    local tailscaleSecretEnv =
+      kube.core.v1.envFromSource.secretRef.withName(self.tailscaleSecret.metadata.name),
 
     tailscaleContainer::
       container.new('tailscale', config.image) +
       container.withEnvMap(baseEnv) +
-      container.withEnvMixin([tailscaleSecretEnv]) +
+      container.withEnvFrom(tailscaleSecretEnv) +
       container.securityContext.capabilities.withAdd('NET_ADMIN'),
 
     tailscaleDeployment:

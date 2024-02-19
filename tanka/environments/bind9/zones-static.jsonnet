@@ -15,6 +15,7 @@ local ipMap = {
     kirito      A       %(kirito)s
     kuroko      A       10.1.69.103
     saitama     A       10.1.69.69
-    vyos        A       172.17.0.2
+    vyos-asuna  A       172.17.0.3
+    vyos-kirito A       172.17.0.4
   ||| % ipMap,
 }

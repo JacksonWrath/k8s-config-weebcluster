@@ -2,12 +2,12 @@
   images: {
     pihole: {
       followTag: 'latest',
-      image: 'pihole/pihole:2024.01.0',
-      prepullImage: 'pihole/pihole:2024.01.0',
+      image: 'pihole/pihole:2024.02.2',
+      prepullImage: 'pihole/pihole:2024.02.2',
     },
     plex: {
       followTag: 'latest',
-      image: 'plexinc/pms-docker:1.32.8.7639-fb6452ebf',
+      image: 'plexinc/pms-docker:1.40.0.7998-c29d4c0c8',
     },
     promtail: {
       followTag: 'latest',
@@ -15,7 +15,7 @@
     },
     prowlarr: {
       followTag: 'release',
-      image: 'hotio/prowlarr:release-1.12.2.4211',
+      image: 'hotio/prowlarr:release-1.13.3.4273',
     },
     qbittorrent: {
       followTag: 'release',
@@ -23,11 +23,11 @@
     },
     radarr: {
       followTag: 'release',
-      image: 'hotio/radarr:release-5.2.6.8376',
+      image: 'hotio/radarr:release-5.3.6.8612',
     },
     sonarr: {
       followTag: 'release',
-      image: 'hotio/sonarr:release-4.0.1.929',
+      image: 'hotio/sonarr:release-4.0.2.1183',
     },
     tautulli: {
       followTag: 'latest',

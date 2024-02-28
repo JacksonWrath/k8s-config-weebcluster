@@ -100,14 +100,18 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
     self.newStandardIngress(name, subdomain, service, servicePort, pathPrefix),
 
   // Creates several resources needed for a PV/PVC pointed at the YoRHa NFS share (with optional subpath)
+  // Appends the server domain name to the PV/PVC names to prevent collisions when switching between servers since
+  //  existing PV/PVC can't be updated to new server.
   newYoRHaNfsVolume(appName, subPath=''):: {
-    local subPathName = if subPath == '' then '-YoRHa' else std.strReplace(subPath, '/', '-'),
+    local subPathName = '-yorha' + std.strReplace(subPath, '/', '-'),
+    local primaryNfs = homelab.nfs.currentPrimary,
+    local rootName = appName + '-nfs-' + primaryNfs.server,
     nfsPV: utils.newNfsPV(
-      name=appName + '-nfs' + subPathName + '-pv',
-      server=homelab.nfs.asuna.server,
-      path=homelab.nfs.asuna.shares.YoRHa + subPath,
-      size=homelab.nfs.asuna.totalSize),
-    nfsPVC: utils.newNfsPVCFromPV(appName + '-nfs' + subPathName, self.nfsPV),
+      name=rootName + subPathName + '-pv',
+      server=primaryNfs.server,
+      path=primaryNfs.shares.YoRHa + subPath,
+      size=primaryNfs.totalSize),
+    nfsPVC: utils.newNfsPVCFromPV(rootName + subPathName, self.nfsPV),
     volume:: utils.newVolumeFromPVC('nfs' + subPathName, self.nfsPVC),
     volumeMount:: kube.core.v1.volumeMount.new(self.volume.name, '/data'),
   },

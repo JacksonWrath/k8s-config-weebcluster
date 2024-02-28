@@ -8,6 +8,8 @@
       [share]: poolPath + '/' + share
       for share in shares
     },
+
+    currentPrimary: self.asuna,
     
     asuna: {
       server: 'asuna.bukkake.cafe',

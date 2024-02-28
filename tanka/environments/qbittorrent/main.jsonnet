@@ -21,6 +21,7 @@ local qbittorrentEnvironment = {
   local ingressSubdomain = 'vash',
   local configVolSize = '1Gi',
   local httpPortNumber = 8080,
+  local primaryNfs = homelab.nfs.currentPrimary,
 
   // Wireguard container
   local wireguardContainer = container.new('wireguard', wgImage) +
@@ -47,8 +48,8 @@ local qbittorrentEnvironment = {
     ),
     utils.newNfsVolume(
       name='qbittorrent-nfs',
-      server=homelab.nfs.asuna.server,
-      path=homelab.nfs.asuna.shares.YoRHa + '/media/qbittorrent',
+      server=primaryNfs.server,
+      path=primaryNfs.shares.YoRHa + '/media/qbittorrent',
     ),
   ],
 

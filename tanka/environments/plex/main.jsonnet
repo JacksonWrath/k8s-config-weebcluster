@@ -18,6 +18,7 @@ local plexEnvironment = {
   local ingressSubdomain = 'satsuki',
   local configVolSize = '100Gi',
   local httpPortNumber = 32400,
+  local primaryNfs = homelab.nfs.currentPrimary,
 
   // Transcoding volume
   transcodingPvc: weebcluster.newStandardPVC('plex-transcode', '20Gi'),
@@ -29,7 +30,7 @@ local plexEnvironment = {
   // Additional volumes on deployment
   local additionalVolumes = [
     utils.newVolumeFromPVC('plex-transcode', self.transcodingPvc),
-    utils.newNfsVolume('plex-media', homelab.nfs.asuna.server, homelab.nfs.asuna.shares.YoRHa + '/media/plex'),
+    utils.newNfsVolume('plex-media', primaryNfs.server, primaryNfs.shares.YoRHa + '/media/plex'),
     kube.core.v1.volume.fromConfigMap('promtail-config', self.promtailConfigMap.metadata.name),
   ],
 

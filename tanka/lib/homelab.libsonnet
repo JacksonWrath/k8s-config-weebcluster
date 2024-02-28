@@ -9,7 +9,7 @@
       for share in shares
     },
 
-    currentPrimary: self.asuna,
+    currentPrimary: self.kirito,
     
     asuna: {
       server: 'asuna.bukkake.cafe',
@@ -21,7 +21,7 @@
     kirito: {
       server: 'kirito.bukkake.cafe',
       ipv4: '10.1.69.121',
-      poolPath: '/mnt/kirito-pool',
+      poolPath: '/mnt/kirito-pool/sao',
       shares: nfs.generate_shares(self.poolPath),
       totalSize: '58Ti',
     },

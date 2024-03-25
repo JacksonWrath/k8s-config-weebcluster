@@ -2,6 +2,10 @@
 
 If recreating the cluster, the following are some cluster-level / one-time steps to be performed.
 
+## Calico
+
+Nothing too crazy. Look up the operator-based install instructions. See manifests in "calico" folder.
+
 ## Ceph OSD device classes
 
 In my environment at least, Ceph comes up with the NVMe drives marked as the `ssd` device class instead. This can be fixed with the Krew plugin (or the toolbox):

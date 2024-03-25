@@ -29,4 +29,10 @@
     repoUrl: 'https://kubernetes.github.io/ingress-nginx',
     version: '4.7.1',
   },
+  'rook-ceph': {
+    name: 'rook-ceph',
+    repo: 'rook',
+    repoUrl: 'https://charts.rook.io/release',
+    version: 'v1.13.3',
+  },
 }

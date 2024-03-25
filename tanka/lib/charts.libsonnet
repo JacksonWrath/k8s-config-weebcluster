@@ -23,4 +23,10 @@
     repoUrl: 'https://grafana.github.io/helm-charts',
     version: '6.59.4',
   },
+  'ingress-nginx': {
+    name: 'ingress-nginx',
+    repo: 'ingress-nginx',
+    repoUrl: 'https://kubernetes.github.io/ingress-nginx',
+    version: '4.7.1',
+  },
 }

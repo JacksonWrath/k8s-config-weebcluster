@@ -7,10 +7,7 @@ local namespace = 'cert-manager';
 
 local certManagerEnv = {
   local chartConfig = {
-    name: 'cert-manager',
-    repo: 'https://charts.jetstack.io',
-    chart: 'cert-manager',
-    version: 'v1.12.4',
+    chartId: 'cert-manager',
     targetNamespace: namespace,
     values: {
       installCRDs: true,

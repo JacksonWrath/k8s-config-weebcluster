@@ -1,13 +1,16 @@
+local charts = import 'charts.libsonnet';
+
 {
   newHelmChart(chartConfig):: self.newHelmChartBase() + {
+    local chart = charts[chartConfig.chartId],
     metadata: {
-      name: chartConfig.name,
-      namespace: std.get(chartConfig, 'namespace', 'helmcharts'),
+      name: chart.name,
+      namespace: std.get(chartConfig, 'resourceNamespace', 'helmcharts'),
     },
     spec: {
-      repo: chartConfig.repo,
-      chart: chartConfig.chart,
-      version: chartConfig.version,
+      repo: chart.repoUrl,
+      chart: chart.name,
+      version: chart.version,
       targetNamespace: chartConfig.targetNamespace,
       valuesContent: std.manifestYamlDoc(chartConfig.values, indent_array_in_object=false, quote_keys=false),
     },

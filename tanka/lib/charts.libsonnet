@@ -17,4 +17,10 @@
     repoUrl: 'https://dl.gitea.com/charts',
     version: '9.5.1',
   },
+  grafana: {
+    name: 'grafana',
+    repo: 'grafana',
+    repoUrl: 'https://grafana.github.io/helm-charts',
+    version: '6.59.4',
+  },
 }

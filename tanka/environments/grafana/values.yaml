@@ -5,10 +5,10 @@ ingress:
   ingressClassName: nginx
   tls:
     - hosts:
-      - grafana.bukkake.cafe
+      - HOSTNAME_REPLACE_KEY
       secretName: grafana-tls
   hosts:
-  - grafana.bukkake.cafe
+  - HOSTNAME_REPLACE_KEY
 persistence:
   enabled: true
 admin:

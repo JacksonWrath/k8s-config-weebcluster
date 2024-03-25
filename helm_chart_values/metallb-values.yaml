@@ -1,4 +1,0 @@
-# As written currently, this is default and therefore not necessary.
-# Remove this comment when a setting is changed to something non-default
-speaker:
-  enabled: true

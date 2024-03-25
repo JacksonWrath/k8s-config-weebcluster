@@ -12,7 +12,8 @@ local charts = import 'charts.libsonnet';
       chart: chart.name,
       version: chart.version,
       targetNamespace: chartConfig.targetNamespace,
-      valuesContent: std.manifestYamlDoc(chartConfig.values, indent_array_in_object=false, quote_keys=false),
+      [if std.objectHas(chartConfig, 'values') then 'valuesContent']: 
+        std.manifestYamlDoc(chartConfig.values, indent_array_in_object=false, quote_keys=false),
     },
   },
   

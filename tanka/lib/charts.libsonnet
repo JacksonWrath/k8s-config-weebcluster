@@ -10,5 +10,11 @@
     repo: 'metallb',
     repoUrl: 'https://metallb.github.io/metallb',
     version: '0.13.10',
-  }
+  },
+  gitea: {
+    name: 'gitea',
+    repo: 'gitea',
+    repoUrl: 'https://dl.gitea.com/charts',
+    version: '9.5.1',
+  },
 }

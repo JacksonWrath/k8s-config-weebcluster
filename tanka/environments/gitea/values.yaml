@@ -4,13 +4,13 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
   hosts:
-    - host: kise.bukkake.cafe
+    - host: HOSTNAME_REPLACE_KEY
       paths:
         - path: /
           pathType: Prefix
   tls:
     - hosts:
-      - kise.bukkake.cafe
+      - HOSTNAME_REPLACE_KEY
       secretName: gitea-tls
 
 postgresql:

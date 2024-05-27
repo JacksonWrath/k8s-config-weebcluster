@@ -9,7 +9,7 @@
       for share in shares
     },
 
-    currentPrimary: self.kirito,
+    currentPrimary: self.asuna,
     
     asuna: {
       server: 'asuna.bukkake.cafe',

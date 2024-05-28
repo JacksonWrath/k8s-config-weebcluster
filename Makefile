@@ -2,7 +2,7 @@ BIN=.venv/bin/
 
 setup:
 	python -m venv .venv
-	$(BIN)pip install jsonnet mypy
+	$(BIN)pip install jsonnet mypy requests
 	$(BIN)mypy --install-types
 
 setup_done:

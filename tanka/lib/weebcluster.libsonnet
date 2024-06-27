@@ -79,19 +79,19 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
   },
   newStandardIngress(name, subdomain, service, servicePort, pathPrefix='/'):: 
     local tlsSecretName = name + '-tls';
-    local host = subdomain + '.' + homelab.defaultDomain;
-    local tls = ingressTLS.withHosts([host]) + ingressTLS.withSecretName(tlsSecretName);
+    local SANs = [subdomain + '.' + domain for domain in homelab.allDomains];
+    local tls = ingressTLS.withHosts(SANs) + ingressTLS.withSecretName(tlsSecretName);
     local backendService = 
       httpIngressPath.backend.service.withName(service.metadata.name) +
       httpIngressPath.backend.service.port.withName(servicePort.name);
     local path = httpIngressPath.withPath(pathPrefix) + httpIngressPath.withPathType('Prefix') + backendService;
-    local rule = ingressRule.withHost(host) + ingressRule.http.withPaths([path]);
+    local rules = [ingressRule.withHost(fqdn) + ingressRule.http.withPaths([path]) for fqdn in SANs];
 
     ingress.new(name) +
     ingress.metadata.withAnnotations(ingressAnnotations) +
     ingress.spec.withTls([tls]) + 
     ingress.spec.withIngressClassName(self.nginxIngressClass) + 
-    ingress.spec.withRules([rule]),
+    ingress.spec.withRules(rules),
 
   // Create an standard Ingress pointed at the 'http' port of a given service
   newStandardHttpIngress(name, subdomain, service, pathPrefix='/')::

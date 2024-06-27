@@ -1,6 +1,7 @@
 // A library for stuff (mostly constants) about my homelab in general
 
 {
+  local homelab = self,
   nfs: {
     local nfs = self,
     local shares = ['YoRHa', 'LongTerm'],
@@ -12,18 +13,21 @@
     currentPrimary: self.asuna,
     
     asuna: {
-      server: 'asuna.bukkake.cafe',
+      server: 'asuna.' + homelab.defaultDomain,
       ipv4: '10.1.69.120',
       poolPath: '/mnt/asuna-pool/sao',
       shares: nfs.generate_shares(self.poolPath),
       totalSize: '58Ti',
     },
     kirito: {
-      server: 'kirito.bukkake.cafe',
+      server: 'kirito.' + homelab.defaultDomain,
       ipv4: '10.1.69.121',
       poolPath: '/mnt/kirito-pool/sao',
       shares: nfs.generate_shares(self.poolPath),
       totalSize: '58Ti',
     },
   },
+  defaultDomain: 'bukkake.cafe',
+  additionalDomains: [],
+  allDomains: [self.defaultDomain] + self.additionalDomains,
 }

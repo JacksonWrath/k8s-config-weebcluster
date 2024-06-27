@@ -1,3 +1,5 @@
+local homelab = import 'homelab.libsonnet';
+
 {
   'named.conf': |||
     include "/etc/bind/named.conf.options";
@@ -20,10 +22,13 @@
     };
   |||,
 
-  'named.conf.local': |||
-    zone "bukkake.cafe" {
-        type master;
-        file "/var/bind/zones/bukkake.cafe";
-    };
-  |||,
+  'named.conf.local': std.join('', [
+    |||
+      zone "%(fqdn)s" {
+          type master;
+          file "/var/bind/zones/%(fqdn)s";
+      };
+    ||| % { fqdn: domain }
+    for domain in homelab.allDomains
+  ]),
 }

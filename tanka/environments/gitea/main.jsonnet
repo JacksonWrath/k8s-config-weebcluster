@@ -1,10 +1,11 @@
 local k = import 'k.libsonnet';
 local weebcluster = import 'weebcluster.libsonnet';
+local homelab = import 'homelab.libsonnet';
 local helm = import 'k3s-helm.libsonnet';
 
 local envName = 'gitea';
 local namespace = 'gitea';
-local hostname = 'kise' + '.' + weebcluster.ingressDomainSuffix;
+local hostname = 'kise' + '.' + homelab.defaultDomain;
 
 local valuesStr = std.strReplace(importstr 'values.yaml', 'HOSTNAME_REPLACE_KEY', hostname);
 local values = std.parseYaml(valuesStr);

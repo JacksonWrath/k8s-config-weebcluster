@@ -11,7 +11,6 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
 
 {
   local weebcluster = self,
-  ingressDomainSuffix: 'bukkake.cafe',
 
   // Import images lib so apps don't need to import it separately
   // It is a separate lib to make scripting updates to it easier
@@ -30,7 +29,7 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
       name: envName,
     },
     spec: {
-      apiServer: 'https://aomine.bukkake.cafe:6443',
+      apiServer: 'https://aomine.' + homelab.defaultDomain + ':6443',
       namespace: namespace,
     },
     data: data,
@@ -80,7 +79,7 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
   },
   newStandardIngress(name, subdomain, service, servicePort, pathPrefix='/'):: 
     local tlsSecretName = name + '-tls';
-    local host = subdomain + '.' + self.ingressDomainSuffix;
+    local host = subdomain + '.' + homelab.defaultDomain;
     local tls = ingressTLS.withHosts([host]) + ingressTLS.withSecretName(tlsSecretName);
     local backendService = 
       httpIngressPath.backend.service.withName(service.metadata.name) +

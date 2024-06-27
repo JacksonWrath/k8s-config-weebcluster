@@ -1,18 +1,21 @@
+local homelab = import 'homelab.libsonnet';
+
 {
-  'bukkake.cafe': |||
+  [domain]: |||
     $TTL 60 ; 1 minute
-    @   SOA  bukkake.cafe. root.bukkake.cafe. (
+    @   SOA  %(fqdn)s. root.%(fqdn)s. (
           16  ; serial
           60  ; refresh (1 minute)
           60  ; retry (1 minute)
           60  ; expire (1 minute)
           60  ; minimum (1 minute)
         )
-        NS      ns1.bukkake.cafe.
+        NS      ns1.%(fqdn)s.
 
     @     A       10.2.69.1
-    *     CNAME   bukkake.cafe.
+    *     CNAME   %(fqdn)s.
     ns1   A       10.2.69.10
-    $INCLUDE /var/bind/zones-static/bukkake.cafe.static
-  |||,
+    $INCLUDE /var/bind/zones-static/%(fqdn)s.static
+  ||| % {fqdn: domain}
+  for domain in homelab.allDomains
 }

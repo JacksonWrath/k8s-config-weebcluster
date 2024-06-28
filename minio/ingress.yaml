@@ -13,12 +13,12 @@ metadata:
 spec:
   tls:
   - hosts:
-      - yuno.bukkake.cafe
-      - yuno-console.bukkake.cafe
+      - yuno.waifus.dev
+      - yuno-console.waifus.dev
     secretName: minio-yuno-tls
   ingressClassName: nginx
   rules:
-  - host: yuno.bukkake.cafe
+  - host: yuno.waifus.dev
     http:
       paths:
       - path: /
@@ -28,7 +28,7 @@ spec:
             name: minio
             port:
               number: 80
-  - host: yuno-console.bukkake.cafe
+  - host: yuno-console.waifus.dev
     http:
       paths:
       - path: /

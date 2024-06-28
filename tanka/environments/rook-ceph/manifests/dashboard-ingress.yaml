@@ -8,11 +8,11 @@ metadata:
 spec:
   tls:
   - hosts:
-    - ceph.bukkake.cafe
+    - ceph.waifus.dev
     secretName: dashboard-tls
   ingressClassName: "nginx"
   rules:
-  - host: ceph.bukkake.cafe
+  - host: ceph.waifus.dev
     http:
       paths:
       - path: /

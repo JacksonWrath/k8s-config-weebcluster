@@ -27,7 +27,9 @@
       totalSize: '58Ti',
     },
   },
-  defaultDomain: 'bukkake.cafe',
-  additionalDomains: [],
+  defaultDomain: 'waifus.dev',
+  additionalDomains: [
+    'bukkake.cafe',
+  ],
   allDomains: [self.defaultDomain] + self.additionalDomains,
 }

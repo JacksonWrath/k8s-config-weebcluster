@@ -29,7 +29,7 @@
   },
   defaultDomain: 'waifus.dev',
   additionalDomains: [
-    'bukkake.cafe',
+    // Additional domains here will be added to most ingresses
   ],
   allDomains: [self.defaultDomain] + self.additionalDomains,
 }

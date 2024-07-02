@@ -18,7 +18,10 @@ loki + gateway {
     s3_bucket_name: 'loki',
     s3_path_style: true,
 
+    using_boltdb_shipper: true,
     boltdb_shipper_shared_store: $._config.storage_backend,
+    using_tsdb_shipper: true,
+    tsdb_shipper_shared_store: $._config.storage_backend,
 
     querier_pvc_class: weebcluster.nvme_storage_class,
     ingester_pvc_class: weebcluster.nvme_storage_class,
@@ -29,16 +32,28 @@ loki + gateway {
 
     loki+: {
       schema_config: {
-        configs: [{
-          from: '2023-10-01',
-          store: 'boltdb-shipper',
-          object_store: $._config.boltdb_shipper_shared_store,
-          schema: 'v12',
-          index: {
-            prefix: '%s_index_' % $._config.table_prefix,
-            period: '%dh' % $._config.index_period_hours,
+        configs: [
+          {
+            from: '2023-10-01',
+            store: 'boltdb-shipper',
+            object_store: $._config.boltdb_shipper_shared_store,
+            schema: 'v12',
+            index: {
+              prefix: '%s_index_' % $._config.table_prefix,
+              period: '%dh' % $._config.index_period_hours,
+            },
           },
-        }],
+          {
+            from: '2024-07-03',
+            store: 'tsdb',
+            object_store: $._config.tsdb_shipper_shared_store,
+            schema: 'v13',
+            index: {
+              prefix: '%s_index_' % $._config.table_prefix,
+              period: '%dh' % $._config.index_period_hours,
+            },
+          },
+        ],
       },
     },
 

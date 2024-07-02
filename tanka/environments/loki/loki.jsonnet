@@ -4,6 +4,9 @@ local weebcluster = import 'weebcluster.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
 
 loki + gateway {
+  _images+:: {
+    loki: 'grafana/loki:2.9.8'
+  },
   _config+:: {
     namespace: 'loki',
     htpasswd_contents: private.loki.htpasswd_contents,

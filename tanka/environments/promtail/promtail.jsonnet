@@ -2,6 +2,9 @@ local promtail = import 'promtail/promtail.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
 
 promtail {
+  _images+:: {
+    promtail: 'grafana/promtail:2.9.8',
+  },
   _config+:: {
     namespace: 'promtail',
 

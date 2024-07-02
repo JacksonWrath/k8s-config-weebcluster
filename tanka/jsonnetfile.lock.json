@@ -58,7 +58,7 @@
           "subdir": "production/ksonnet/loki"
         }
       },
-      "version": "e470258113697edd5520c214f866a357762ed814",
+      "version": "94e00299ec9b36ad97c147641566b6922268c54e",
       "sum": "mbxPqBkSUlah1G6AY6Z0FknN8O/m/VGANtvIRq4ssLE="
     },
     {
@@ -68,7 +68,7 @@
           "subdir": "production/ksonnet/promtail"
         }
       },
-      "version": "e470258113697edd5520c214f866a357762ed814",
+      "version": "94e00299ec9b36ad97c147641566b6922268c54e",
       "sum": "SrZXHDjKp9Tk3huA4Od8z/QjeX4SeSR3kI9ZWcbbDjo="
     },
     {

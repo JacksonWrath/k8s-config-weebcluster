@@ -21,7 +21,7 @@
     name: 'grafana',
     repo: 'grafana',
     repoUrl: 'https://grafana.github.io/helm-charts',
-    version: '7.3.11',
+    version: '8.3.1',
   },
   'ingress-nginx': {
     name: 'ingress-nginx',

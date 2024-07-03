@@ -5,7 +5,8 @@ local private = import 'libsonnet-secrets/rewt.libsonnet';
 
 loki + gateway {
   _images+:: {
-    loki: 'grafana/loki:2.9.8'
+    loki: 'grafana/loki:3.0.0',
+    nginx: 'nginx:1.26-alpine',
   },
   _config+:: {
     namespace: 'loki',

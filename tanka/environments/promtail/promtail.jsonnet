@@ -3,7 +3,7 @@ local private = import 'libsonnet-secrets/rewt.libsonnet';
 
 promtail {
   _images+:: {
-    promtail: 'grafana/promtail:2.9.8',
+    promtail: 'grafana/promtail:3.0.0',
   },
   _config+:: {
     namespace: 'promtail',

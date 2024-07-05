@@ -3,6 +3,32 @@ local loki = import 'loki/loki.libsonnet';
 local weebcluster = import 'weebcluster.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
 
+local requestOverride(cpu=null, mem=null) = {
+  resources+: {
+    requests+: {
+      [if cpu != null then 'cpu']: cpu,
+      [if mem != null then 'memory']: mem,
+    },
+  },
+};
+
+local resourceRequestsOverrides = {
+  ingester_container+:: requestOverride(mem='200Mi'),
+  memcached_chunks+: {
+    memcached_container+:: requestOverride(mem='100Mi'),
+  },
+  memcached_index_queries+: {
+    memcached_container+:: requestOverride(mem='50Mi'),
+  },
+  memcached_frontend+: {
+    memcached_container+:: requestOverride(mem='50Mi'),
+  },
+  distributor_container+:: requestOverride(mem='100Mi'),
+  compactor_container+:: requestOverride(mem='100Mi'),
+  querier_container+:: requestOverride(mem='100Mi'),
+  query_frontend_container+:: requestOverride(mem='100Mi'),
+};
+
 loki + gateway {
   _images+:: {
     loki: 'grafana/loki:3.0.0',
@@ -61,4 +87,4 @@ loki + gateway {
     replication_factor: 3,
     consul_replicas: 1,
   },
-}
+} + resourceRequestsOverrides

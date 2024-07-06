@@ -31,6 +31,7 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
     spec: {
       apiServer: 'https://aomine.' + homelab.defaultDomain + ':6443',
       namespace: namespace,
+      injectLabels: true, // This allows running 'tk prune' to clean up removed resources.
     },
     data: data,
   },

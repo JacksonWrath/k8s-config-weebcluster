@@ -63,6 +63,16 @@
         }
       },
       "version": "main"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus-operator/prometheus-operator.git",
+          "subdir": "jsonnet"
+        }
+      },
+      "version": "v0.75.1",
+      "name": "prometheus-operator"
     }
   ],
   "legacyImports": true

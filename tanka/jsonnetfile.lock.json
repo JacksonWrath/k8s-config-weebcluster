@@ -100,6 +100,17 @@
       },
       "version": "3e32f80d1493d1579d273d1522af1fae2cc7c97f",
       "sum": "3MdwG7YiDlyZHbuSnN52Kvv4XZ3JmYuNKjXx7ocoChQ="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus-operator/prometheus-operator.git",
+          "subdir": "jsonnet"
+        }
+      },
+      "version": "e1136aac87ad8a8489fee94f8c9dcb8a7e6a7f18",
+      "sum": "ycZJNCzyNffmF0wLIp7Tpob/zKtoQwUhj6Hlvt+khUc=",
+      "name": "prometheus-operator"
     }
   ],
   "legacyImports": false

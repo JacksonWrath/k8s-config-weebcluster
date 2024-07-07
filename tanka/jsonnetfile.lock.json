@@ -132,6 +132,17 @@
       "version": "e1136aac87ad8a8489fee94f8c9dcb8a7e6a7f18",
       "sum": "ycZJNCzyNffmF0wLIp7Tpob/zKtoQwUhj6Hlvt+khUc=",
       "name": "prometheus-operator"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/rfmoz/grafana-dashboards.git",
+          "subdir": "prometheus"
+        }
+      },
+      "version": "cad8539cc4c4ed043935e69b9c1ec23e551806f4",
+      "sum": "MAm3oe2Xn+BreFlxuz/bKeHCU2ceFHFkfQ5t877D1zo=",
+      "name": "rfmoz-grafana-dashboards"
     }
   ],
   "legacyImports": false

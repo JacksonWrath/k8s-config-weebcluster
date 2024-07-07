@@ -92,6 +92,16 @@
       },
       "version": "v0.75.1",
       "name": "prometheus-operator"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/rfmoz/grafana-dashboards.git",
+          "subdir": "prometheus"
+        }
+      },
+      "version": "master",
+      "name": "rfmoz-grafana-dashboards"
     }
   ],
   "legacyImports": true

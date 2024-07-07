@@ -1,5 +1,9 @@
 {
   images: {
+    node_exporter: {
+      followTag: 'latest',
+      image: 'prom/node-exporter:v1.8.1',
+    },
     pihole: {
       followTag: 'latest',
       image: 'pihole/pihole:2024.05.0',

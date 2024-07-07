@@ -67,6 +67,16 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/jsonnet-libs/prometheus-operator-libsonnet.git",
+          "subdir": "0.72"
+        }
+      },
+      "version": "main",
+      "name": "prometheus"
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/prometheus-operator/prometheus-operator.git",
           "subdir": "jsonnet"
         }

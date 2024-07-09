@@ -8,8 +8,11 @@ local charts = import 'charts.libsonnet';
       namespace: std.get(chartConfig, 'resourceNamespace', 'helmcharts'),
     },
     spec: {
-      repo: chart.repoUrl,
-      chart: chart.name,
+      chart:
+        if std.objectHas(chart, 'oci')
+        then chart.oci
+        else chart.name,
+      [if std.objectHas(chart, 'repo') then 'repo']: chart.repo,
       version: chart.version,
       targetNamespace: chartConfig.targetNamespace,
       [if std.objectHas(chartConfig, 'values') then 'valuesContent']: 

@@ -4,6 +4,11 @@
     repo: 'https://charts.jetstack.io',
     version: 'v1.14.5',
   },
+  etcd: {
+    name: 'etcd',
+    oci: 'oci://registry-1.docker.io/bitnamicharts/etcd',
+    version: '10.2.6',
+  },
   metallb: {
     name: 'metallb',
     repo: 'https://metallb.github.io/metallb',

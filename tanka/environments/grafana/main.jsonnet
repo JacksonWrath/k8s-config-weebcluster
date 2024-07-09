@@ -13,6 +13,13 @@ local datasources = {
   loki: grafana.datasource.new('Loki', 'http://gateway.loki', 'loki')
     + grafana.datasource.withBasicAuth(private.loki.gateway_username, private.loki.gateway_password),
   prometheus1: grafana.datasource.new('prometheus-1', 'http://prometheus-1.prometheus:9090', 'prometheus'),
+  mimir: grafana.datasource.new('Mimir', 'http://query-frontend.mimir:8080/prometheus', 'prometheus', true)
+    + grafana.datasource.withJsonData({
+      prometheusType: 'Mimir',
+      PrometheusVersion: '2.9.1', 
+      // This evaluates to "> 2.9.x" in Grafana currently. It's probably just a feature-gate.
+      // Will have to keep an eye on this when I update Grafana.
+    }),
 };
 
 local dashboards = {
@@ -31,6 +38,7 @@ local grafanaEnv = {
     // Datasources
     + grafana.addDatasource('loki', datasources.loki)
     + grafana.addDatasource('prometheus-1', datasources.prometheus1)
+    + grafana.addDatasource('mimir', datasources.mimir)
     // Dashboards
     + grafana.addDashboard('node-exporter-full', dashboards.node_exporter_full, 'Node Exporter Full'),
 

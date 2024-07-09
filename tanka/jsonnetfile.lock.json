@@ -8,8 +8,8 @@
           "subdir": "libsonnet-secrets"
         }
       },
-      "version": "876d9b65e0d393e8754293abeea4605698865844",
-      "sum": "Ec6cKCmWuRWPmkOloJY1jakQA4msI5Thuvif/dK32KE="
+      "version": "64ad9584416c89b08fb6d0b65cdffaa6b44c4644",
+      "sum": "YNa61H+W1y26/4F/XRPTcOnrNwwunTyJbDaO8Az9OnQ="
     },
     {
       "source": {
@@ -90,6 +90,16 @@
       },
       "version": "b4f7181c7aa9484e66976e8a933111a9b85ea8c2",
       "sum": "RdDOhCxK2J0DuQLQUy1QkF8rtbmQ3PZVepWu8s5osJw="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/mimir.git",
+          "subdir": "operations/mimir"
+        }
+      },
+      "version": "40cfafdb26a774451fcce37a39b1d760d9137407",
+      "sum": "FQ65365YK4kZAJnOgnJOOPFCVNLX3PNF30gggz3/X68="
     },
     {
       "source": {

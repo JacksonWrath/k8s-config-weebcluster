@@ -22,11 +22,7 @@ local datasources = {
     }),
 };
 
-local dashboards = {
-  // These are available on grafana.com. IDs are commented by each.
-  // e.g. grafana.com/grafana/dashboards/<ID>
-  node_exporter_full: import 'rfmoz-grafana-dashboards/node-exporter-full.json', // 1860
-};
+local dashboards = import 'dashboards.libsonnet';
 
 local grafanaEnv = {
   namespace: k.core.v1.namespace.new(namespace),
@@ -40,7 +36,9 @@ local grafanaEnv = {
     + grafana.addDatasource('prometheus-1', datasources.prometheus1)
     + grafana.addDatasource('mimir', datasources.mimir)
     // Dashboards
-    + grafana.addDashboard('node-exporter-full', dashboards.node_exporter_full, 'Node Exporter Full'),
+    + grafana.addDashboard('node-exporter-full', dashboards.node_exporter_full, 'Node Exporter Full')
+    + grafana.addDashboard('truenas', dashboards.truenas, 'TrueNAS')
+    + grafana.addDashboard('truenas-diskinsights', dashboards.truenasDiskInsights, 'TrueNAS'),
 
   ingress: weebcluster.newStandardHttpIngress('grafana', subdomain, self.grafanaApp.grafana_service),
 };

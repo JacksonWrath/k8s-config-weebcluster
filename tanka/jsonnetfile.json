@@ -13,6 +13,15 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/Supporterino/truenas-graphite-to-prometheus.git",
+          "subdir": ""
+        }
+      },
+      "version": "main"
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/grafana/jsonnet-libs.git",
           "subdir": "grafana"
         }

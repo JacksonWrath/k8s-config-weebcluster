@@ -4,6 +4,10 @@
       followTag: 'latest',
       image: 'prom/node-exporter:v1.8.1',
     },
+    graphite_exporter: {
+      followTag: 'latest',
+      image: 'prom/graphite-exporter:v0.15.1',
+    },
     pihole: {
       followTag: 'latest',
       image: 'pihole/pihole:2024.05.0',

@@ -53,9 +53,19 @@ local graphiteExporterEnv = {
   ]),
 
   local serviceMonitor = prometheus.monitoring.v1.serviceMonitor,
+  serviceMonitorEndpoint:: serviceMonitor.spec.endpoints.withPort('metrics')
+    + serviceMonitor.spec.endpoints.withHonorLabels(true)
+    + serviceMonitor.spec.endpoints.withRelabelings(
+      [
+        {
+          action: 'labeldrop',
+          regex: 'pod',
+        }
+      ]
+    ),
   serviceMonitor: serviceMonitor.new('graphite-exporter')
    + serviceMonitor.spec.selector.withMatchLabels(labels)
-   + serviceMonitor.spec.withEndpoints({port: 'metrics', honorLabels: true}),
+   + serviceMonitor.spec.withEndpoints(self.serviceMonitorEndpoint),
 };
 
 weebcluster.newTankaEnv(envName, namespace, graphiteExporterEnv) + {

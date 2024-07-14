@@ -60,6 +60,8 @@ local prometheusEnv = {
 
   prometheus: prometheus.new(clusterName)
     + prometheus.spec.withServiceAccountName(self.serviceAccount.metadata.name)
+    + prometheus.spec.withPrometheusExternalLabelName('cluster')  // Mimir uses this label to identify a cluster
+    + prometheus.spec.withReplicaExternalLabelName('__replica__') // Mimir uses this label to deduplicate replicas
     + prometheus.spec.withRemoteWrite(
         prometheus.spec.remoteWrite.withUrl('http://distributor.mimir:8080/api/v1/push')
       )

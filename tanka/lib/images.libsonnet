@@ -41,5 +41,9 @@
       followTag: 'latest',
       image: 'tautulli/tautulli:v2.14.2',
     },
+    ubuntu: {
+      followTag: 'noble',
+      image: 'ubuntu:noble-20240605',
+    },
   },
 }

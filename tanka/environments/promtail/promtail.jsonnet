@@ -15,15 +15,12 @@ promtail {
         username:: private.loki.gateway_username,
         password:: private.loki.gateway_password,
       }],
-      pipeline_stages: [{
-        cri: {},
-      }],
     },
   },
 
   // This "promtail_config" is what is rendered into the ConfigMap for the promtail config file
-  promtail_config+:: {
-    scrape_configs: super.scrape_configs + [
+  promtail_config+:: (import 'k8s_scrape_config.libsonnet') + {
+    scrape_configs+: [
       // Scrape config for systemd journal on each host
       {
         job_name: 'node-systemd-journal',

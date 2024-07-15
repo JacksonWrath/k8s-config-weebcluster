@@ -23,6 +23,7 @@ local datasources = {
 };
 
 local dashboards = import 'dashboards.libsonnet';
+local dashboardsLib = import 'grafana/dashboards.libsonnet';
 
 local grafanaEnv = {
   namespace: k.core.v1.namespace.new(namespace),
@@ -36,9 +37,19 @@ local grafanaEnv = {
     + grafana.addDatasource('prometheus-1', datasources.prometheus1)
     + grafana.addDatasource('mimir', datasources.mimir)
     // Dashboards
-    + grafana.addDashboard('node-exporter-full', dashboards.node_exporter_full, 'Node Exporter Full')
-    + grafana.addDashboard('truenas', dashboards.truenas, 'TrueNAS')
-    + grafana.addDashboard('truenas-diskinsights', dashboards.truenasDiskInsights, 'TrueNAS'),
+    + {
+        grafanaDashboardFolders+: {
+          [dashboardGroup.folder]+: {
+            id: dashboardsLib.folderID(dashboardGroup.folder),
+            name: dashboardGroup.folder,
+            dashboards+: {
+              [name]+: dashboardGroup.grafanaDashboards[name]
+              for name in std.objectFields(dashboardGroup.grafanaDashboards)
+            }
+          }
+          for dashboardGroup in std.objectValues(import 'dashboards.libsonnet')
+        }
+      },
 
   ingress: weebcluster.newStandardHttpIngress('grafana', subdomain, self.grafanaApp.grafana_service),
 };

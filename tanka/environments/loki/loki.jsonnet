@@ -2,6 +2,7 @@ local gateway = import 'loki/gateway.libsonnet';
 local loki = import 'loki/loki.libsonnet';
 local weebcluster = import 'weebcluster.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
+local prometheus = import 'prometheus/main.libsonnet';
 
 local requestOverride(cpu=null, mem=null) = {
   resources+: {
@@ -29,6 +30,19 @@ local resourceRequestsOverrides = {
   query_frontend_container+:: requestOverride(mem='100Mi'),
 };
 
+local serviceMonitorOverrides = {
+  serviceMonitor+: {
+    spec+: {
+      servicesToRelabel+: [
+        'query-frontend',
+        'ingester-zone-a',
+        'ingester-zone-b',
+        'ingester-zone-c',
+      ],
+    },
+  },
+};
+
 loki + gateway {
   _images+:: {
     loki: 'grafana/loki:3.0.0',
@@ -37,6 +51,8 @@ loki + gateway {
   _config+:: {
     namespace: 'loki',
     htpasswd_contents: private.loki.htpasswd_contents,
+
+    create_service_monitor: true,
 
     storage_backend: 's3',
     s3_access_key: private.loki.s3_access_key,
@@ -87,4 +103,10 @@ loki + gateway {
     replication_factor: 3,
     consul_replicas: 1,
   },
-} + resourceRequestsOverrides
+  local loki_mixin = (import 'loki-mixin/recording_rules.libsonnet') + (import 'loki-mixin/config.libsonnet'),
+  local prometheusRule = prometheus.monitoring.v1.prometheusRule,
+  prometheusRecordingRule: prometheusRule.new('loki-prometheusrecordingrules')
+    + prometheusRule.spec.withGroups(loki_mixin.prometheusRules.groups),
+} 
++ resourceRequestsOverrides
++ serviceMonitorOverrides

@@ -55,6 +55,8 @@ local prometheusEnv = {
       probeNamespaceSelector: {},
       scrapeConfigSelector: {},
       scrapeConfigNamespaceSelector: {},
+      ruleSelector: {},
+      ruleNamespaceSelector: {},
     }
   },
 

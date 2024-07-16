@@ -71,7 +71,7 @@
         regex: ';+([^;]+).*', // Capture first string preceded by a semi-colon, up to the next semi-colon.
         action: 'replace',
         target_label: 'app',
-        replacement: '{$1}',
+        replacement: '$1',
       },
 
       // Drop extra labels that aren't useful

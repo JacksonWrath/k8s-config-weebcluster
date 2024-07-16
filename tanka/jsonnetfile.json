@@ -113,6 +113,16 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/kubernetes/kube-state-metrics.git",
+          "subdir": "jsonnet"
+        }
+      },
+      "version": "main",
+      "name": "ksm"
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/prometheus-operator/prometheus-operator.git",
           "subdir": "jsonnet"
         }

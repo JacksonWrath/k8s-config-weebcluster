@@ -8,6 +8,10 @@
       followTag: 'latest',
       image: 'prom/graphite-exporter:v0.15.1',
     },
+    kube_state_metrics: {
+      followTag: '2.12.0',
+      image: 'bitnami/kube-state-metrics:2.12.0-debian-12-r10',
+    },
     pihole: {
       followTag: 'latest',
       image: 'pihole/pihole:2024.05.0',

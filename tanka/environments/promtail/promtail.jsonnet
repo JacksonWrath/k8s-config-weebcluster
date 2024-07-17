@@ -1,23 +1,7 @@
 local promtail = import 'promtail/promtail.libsonnet';
-local private = import 'libsonnet-secrets/rewt.libsonnet';
+local config = import 'config.libsonnet';
 
-promtail {
-  _images+:: {
-    promtail: 'grafana/promtail:3.0.0',
-  },
-  _config+:: {
-    namespace: 'promtail',
-
-    promtail_config+: {
-      clients: [{
-        scheme:: 'http',
-        hostname:: 'gateway.loki',
-        username:: private.loki.gateway_username,
-        password:: private.loki.gateway_password,
-      }],
-    },
-  },
-
+promtail + config {
   // This "promtail_config" is what is rendered into the ConfigMap for the promtail config file
   promtail_config+:: (import 'k8s_scrape_config.libsonnet') + {
     scrape_configs+: [
@@ -27,6 +11,7 @@ promtail {
         journal: {
           labels: {
             job: 'node-systemd-journal',
+            cluster: 'weebcluster',
           },
           path: '/var/log/journal', // The promtail daemonset already has '/var/log' mounted
         },

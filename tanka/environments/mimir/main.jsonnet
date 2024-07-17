@@ -63,12 +63,16 @@ local mimirEnv = {
     local no_multitenancy = { 'auth.multitenancy-enabled': false },
     // I don't have Let's Encrypt set up for Minio, so it needs to use HTTP
     local insecure_s3 = { 'common.storage.s3.insecure': true },
-    // The etcd endpoint is hard-coded, expecting the naming from the deprecated operator. Override that.
-    local etcd_endpoint = { 
+    // HA config to add to distributor
+    local ha_config = {
+      // The etcd endpoint is hard-coded, expecting the naming from the deprecated operator. Override that.
       'distributor.ha-tracker.etcd.endpoints': 'etcd.%(namespace)s.svc.cluster.local:2379' % namespace,
+      // Some of Mimir's and Loki's dashboards use "cluster" to define the compute cluster, not Prometheus, so I've
+      // changed the external label that Prometheus uses to identify itself.
+      'distributor.ha-tracker.cluster': 'prom_cluster',
     },
 
-    distributor_args+:: etcd_endpoint + no_multitenancy,
+    distributor_args+:: ha_config + no_multitenancy,
     compactor_args+:: insecure_s3 + no_multitenancy,
     ingester_args+:: insecure_s3 + no_multitenancy,
     store_gateway_args+:: insecure_s3 + no_multitenancy,
@@ -116,11 +120,6 @@ local mimirEnv = {
       action: 'replace',
       targetLabel: 'job',
       replacement: namespace + '/$1',
-    },
-    {
-      action: 'replace',
-      replacement: 'weebcluster',
-      targetLabel: 'cluster',
     },
   ],
 

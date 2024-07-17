@@ -3,12 +3,12 @@
 //
 // I wanted to be able to expand it, and it wasn't designed for that.
 
-{
+local config = import 'config.libsonnet';
+
+config {
   gen_scrape_config(job_name, pod_uid):: {
     job_name: job_name,
-    pipeline_stages: [{
-      cri: {},
-    }],
+    pipeline_stages: $._config.pipeline_stages,
     kubernetes_sd_configs: [{
       role: 'pod',
     }],

@@ -4,6 +4,7 @@ local helm = import 'k3s-helm.libsonnet';
 local k = import 'k.libsonnet';
 
 local mimir = import 'mimir/mimir.libsonnet';
+local prometheusLib = import 'prometheus/main.libsonnet';
 
 local envName = 'mimir';
 local namespace = 'mimir';
@@ -97,6 +98,52 @@ local mimirEnv = {
     memcached_metadata+: smallMemcached,
 
   },
+
+  // Service monitor for scraping Mimir
+  local services = [
+    'compactor',
+    'distributor',
+    'ingester',
+    'querier',
+    'query-frontend',
+    'query-scheduler',
+    'store-gateway',
+  ],
+
+  local relabelings = [
+    {
+      sourceLabels: ['job'],
+      action: 'replace',
+      targetLabel: 'job',
+      replacement: namespace + '/$1',
+    },
+    {
+      action: 'replace',
+      replacement: 'weebcluster',
+      targetLabel: 'cluster',
+    },
+  ],
+
+  local serviceMonitor = prometheusLib.monitoring.v1.serviceMonitor,
+  mimirServiceMonitor: serviceMonitor.new('mimir-servicemonitor')
+    + serviceMonitor.spec.selector.withMatchExpressions({
+        key: 'name',
+        operator: 'In',
+        values: services,
+      })
+    + serviceMonitor.spec.withEndpoints(
+        [
+          serviceMonitor.spec.endpoints.withPort(component + '-http-metrics')
+          + serviceMonitor.spec.endpoints.withHonorLabels(true)
+          + serviceMonitor.spec.endpoints.withRelabelings(relabelings),
+          for component in services
+        ]
+      ),
+  
+  local mimir_mixin = (import 'mimir-mixin/mixin.libsonnet'),
+  local prometheusRule = prometheusLib.monitoring.v1.prometheusRule,
+  mimirPrometheusRule: prometheusRule.new('mimir-prometheusrecordingrules')
+    + prometheusRule.spec.withGroups(mimir_mixin.prometheusRules.groups),
 };
 
 weebcluster.newTankaEnv(envName, namespace, mimirEnv)

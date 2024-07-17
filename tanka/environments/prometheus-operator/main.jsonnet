@@ -45,8 +45,4 @@ local poEnv = prometheusOperator(config) {
     ]),
 };
 
-weebcluster.newTankaEnv(envName, namespace, poEnv) + {
-  spec+: {
-    applyStrategy: 'server', // Because of CRDs, "last-applied-configuration" is too long with client-side apply
-  }
-}
+weebcluster.newTankaEnv(envName, namespace, poEnv)

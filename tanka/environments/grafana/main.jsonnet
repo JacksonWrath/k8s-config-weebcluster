@@ -73,8 +73,4 @@ local grafanaEnv = {
 //   },
 // };
 
-weebcluster.newTankaEnv(envName, namespace, grafanaEnv) + {
-  spec+: {
-    applyStrategy: 'server', // "last-applied-configuration" is too long with client-side apply. Dashboards are huge.
-  },
-}
+weebcluster.newTankaEnv(envName, namespace, grafanaEnv)

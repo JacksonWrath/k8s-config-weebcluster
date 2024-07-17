@@ -68,8 +68,4 @@ local graphiteExporterEnv = {
    + serviceMonitor.spec.withEndpoints(self.serviceMonitorEndpoint),
 };
 
-weebcluster.newTankaEnv(envName, namespace, graphiteExporterEnv) + {
-  spec+: {
-    applyStrategy: 'server',
-  },
-}
+weebcluster.newTankaEnv(envName, namespace, graphiteExporterEnv)

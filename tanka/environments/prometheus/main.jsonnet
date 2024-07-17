@@ -66,6 +66,7 @@ local prometheusEnv = {
     + prometheus.spec.withReplicaExternalLabelName('__replica__') // Mimir uses this label to deduplicate replicas
     + prometheus.spec.withRemoteWrite(
         prometheus.spec.remoteWrite.withUrl('http://distributor.mimir:8080/api/v1/push')
+        + prometheus.spec.remoteWrite.queueConfig.withMinShards(3),
       )
     + selectorsSpec,
 

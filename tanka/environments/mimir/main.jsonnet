@@ -25,6 +25,10 @@ local mimirEnv = {
       ingester_data_disk_class: weebcluster.nvme_storage_class,
       store_gateway_data_disk_class: weebcluster.nvme_storage_class,
       compactor_data_disk_class: weebcluster.nvme_storage_class,
+
+      limits: self.overrides.medium_user + {
+        compactor_blocks_retention_period: '0',
+      },
     },
 
     // Unfortunately, Grafana's jsonnet examples yet again aren't functional OOTB.

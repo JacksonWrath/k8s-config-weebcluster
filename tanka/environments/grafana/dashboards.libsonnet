@@ -1,4 +1,5 @@
 (import 'dashboards/direct-use.libsonnet')
-+ (import 'dashboards/truenas.libsonnet')
++ (import 'dashboards/ceph.libsonnet')
 + (import 'dashboards/loki.libsonnet')
 + (import 'dashboards/mimir.libsonnet')
++ (import 'dashboards/truenas.libsonnet')

@@ -43,7 +43,7 @@ local grafanaEnv = {
             id: dashboardsLib.folderID(dashboardGroup.folder),
             name: dashboardGroup.folder,
             dashboards+: {
-              [name]+: dashboardGroup.grafanaDashboards[name]
+              [name]+: dashboardGroup.grafanaDashboards[name] + { editable: true }
               for name in std.objectFields(dashboardGroup.grafanaDashboards)
             }
           }

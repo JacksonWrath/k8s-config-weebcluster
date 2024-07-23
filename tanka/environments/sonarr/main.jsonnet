@@ -19,7 +19,7 @@ local sonarrEnvironment = {
 
   namespace: kube.core.v1.namespace.new(namespace),
 
-  mediaVol: weebcluster.newYoRHaNfsVolumeNolock(appName, '/media'),
+  mediaVol: weebcluster.newNfsVolumeNolock(appName, 'media'),
 
   sonarrApp: weebcluster.newStandardApp(appName, image, configVolSize, httpPortNumber, ingressSubdomain) {
     local envMap = {PUID: '1000', PGID: '1000'},

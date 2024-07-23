@@ -4,7 +4,7 @@
   local homelab = self,
   nfs: {
     local nfs = self,
-    local shares = ['YoRHa', 'LongTerm'],
+    local shares = ['media', 'YoRHa', 'LongTerm'],
     generate_shares(poolPath):: {
       [share]: poolPath + '/' + share
       for share in shares

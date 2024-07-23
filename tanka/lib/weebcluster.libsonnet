@@ -100,17 +100,17 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
     local servicePort = kube.core.v1.servicePort.withName('http');
     self.newStandardIngress(name, subdomain, service, servicePort, pathPrefix),
 
-  // Creates several resources needed for a PV/PVC pointed at the YoRHa NFS share (with optional subpath)
+  // Creates several resources needed for a PV/PVC pointed at the one of the NFS shares (with optional subpath)
   // Appends the server domain name to the PV/PVC names to prevent collisions when switching between servers since
   //  existing PV/PVC can't be updated to new server.
-  newYoRHaNfsVolume(appName, subPath=''):: {
-    local subPathName = '-yorha' + std.strReplace(subPath, '/', '-'),
+  newNfsVolume(appName, shareName, subPath=''):: {
+    local subPathName = '-' + shareName + std.strReplace(subPath, '/', '-'),
     local primaryNfs = homelab.nfs.currentPrimary,
     local rootName = appName + '-nfs-' + primaryNfs.server,
     nfsPV: utils.newNfsPV(
       name=rootName + subPathName + '-pv',
       server=primaryNfs.server,
-      path=primaryNfs.shares.YoRHa + subPath,
+      path=primaryNfs.shares[shareName] + subPath,
       size=primaryNfs.totalSize),
     nfsPVC: utils.newNfsPVCFromPV(rootName + subPathName, self.nfsPV),
     volume:: utils.newVolumeFromPVC('nfs' + subPathName, self.nfsPVC),
@@ -118,8 +118,8 @@ local httpIngressPath = kube.networking.v1.httpIngressPath;
   },
 
   // The Servarr family of apps require that NFS be mounted with 'nolock' set. 
-  newYoRHaNfsVolumeNolock(appName, subPath=''):: 
-    self.newYoRHaNfsVolume(appName, subPath) + {
+  newNfsVolumeNolock(appName, shareName, subPath='')::
+    self.newNfsVolume(appName, shareName, subPath) + {
       nfsPV+: kube.core.v1.persistentVolume.spec.withMountOptions(['nolock'])
     },
 }

@@ -49,7 +49,7 @@ local qbittorrentEnvironment = {
     utils.newNfsVolume(
       name='qbittorrent-nfs',
       server=primaryNfs.server,
-      path=primaryNfs.shares.YoRHa + '/media/qbittorrent',
+      path=primaryNfs.shares.media + '/qbittorrent',
     ),
   ],
 

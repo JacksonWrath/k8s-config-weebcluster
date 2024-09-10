@@ -19,7 +19,7 @@
     },
     plex: {
       followTag: 'latest',
-      image: 'plexinc/pms-docker:1.40.2.8395-c67dce28e',
+      image: 'plexinc/pms-docker:1.40.5.8921-836b34c27',
     },
     promtail: {
       followTag: 'latest',

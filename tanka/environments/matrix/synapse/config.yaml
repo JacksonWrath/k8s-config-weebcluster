@@ -1,0 +1,49 @@
+# Configuration file for Synapse.
+#
+# This is a YAML file: see [1] for a quick introduction. Note in particular
+# that *indentation is important*: all the elements of a list or dictionary
+# should have the same indentation.
+#
+# [1] https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+#
+# For more information on how to configure Synapse, including a complete accounting of
+# each option, go to docs/usage/configuration/config_documentation.md or
+# https://matrix-org.github.io/synapse/latest/usage/configuration/config_documentation.html
+server_name: 3d1b.waifus.dev
+pid_file: /config/homeserver.pid
+listeners:
+  - port: 8080
+    type: http
+    x_forwarded: true
+    bind_addresses: ['::1', '0.0.0.0']
+    resources:
+      - names: [client, federation]
+        compress: false
+serve_server_wellknown: true
+database:
+  name: sqlite3
+  args:
+    database: /config/homeserver.db
+log_config: /config/3d1b.log.config
+media_store_path: /config/media_store
+signing_key_path: /config/3d1b.signing.key
+registration_shared_secret_path: /config/registration.shared.secret
+trusted_key_servers:
+  - server_name: matrix.org
+report_stats: false
+enable_registration: true
+enable_registration_without_verification: false
+allow_public_rooms_without_auth: false
+allow_public_rooms_over_federation: false
+registration_requires_token: true
+disable_msisdn_registration: true
+auto_join_rooms:
+  - "#newusers:3d1b.waifus.dev"
+email:
+  smtp_host: smtp.mailgun.org
+  force_tls: true
+  require_transport_security: true
+  enable_notifs: true
+  notif_for_new_users: false
+  notif_from: "matrix@3d1b.waifus.dev"
+  # smtp_user and smtp_pass come from a separate private repo. You would need to add these here.

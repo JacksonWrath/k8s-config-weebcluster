@@ -12,6 +12,10 @@
       followTag: '2.12.0',
       image: 'bitnami/kube-state-metrics:2.12.0-debian-12-r10',
     },
+    matrix_synapse: {
+      followTag: 'latest',
+      image: 'matrixdotorg/synapse:v1.115.0'
+    },
     pihole: {
       followTag: 'latest',
       image: 'pihole/pihole:2024.05.0',

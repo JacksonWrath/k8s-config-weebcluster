@@ -49,9 +49,9 @@
       followTag: 'noble',
       image: 'ubuntu:noble-20240605',
     },
-    unifiNetworkController: {
+    unifiNetworkApplication: {
       followTag: 'latest',
-      image: 'linuxserver/unifi-controller:8.0.24',
+      image: 'linuxserver/unifi-network-application:version-8.5.6',
     },
   },
 }

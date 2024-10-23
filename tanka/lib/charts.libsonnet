@@ -14,6 +14,11 @@
     repo: 'https://metallb.github.io/metallb',
     version: '0.14.5',
   },
+  'mongodb-operator': {
+    name: 'community-operator',
+    repo: 'https://mongodb.github.io/helm-charts',
+    version: '0.11.0',
+  },
   gitea: {
     name: 'gitea',
     repo: 'https://dl.gitea.com/charts',

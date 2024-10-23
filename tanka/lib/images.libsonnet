@@ -53,5 +53,9 @@
       followTag: 'noble',
       image: 'ubuntu:noble-20240605',
     },
+    unifiNetworkApplication: {
+      followTag: 'latest',
+      image: 'linuxserver/unifi-network-application:version-8.5.6',
+    },
   },
 }

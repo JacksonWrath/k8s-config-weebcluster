@@ -51,6 +51,17 @@ local persistentVolumeClaim = kube.core.v1.persistentVolumeClaim;
       ports=[servicePort],
     ),
 
+  newServiceFromContainerPorts(name, selectorLabels, containerPorts)::
+    service.new(
+      name=name,
+      selector=selectorLabels,
+      ports=[
+        kube.core.v1.servicePort.newNamed(port.name, port.containerPort, port.name)
+          + kube.core.v1.servicePort.withProtocol(if std.objectHas(port, 'protocol') then port.protocol else 'TCP')
+        for port in containerPorts
+      ],
+    ),
+
   // Creates a new Container with port 53 exposed on TCP and UDP
   newDnsContainer(name, image):: 
     kube.core.v1.container.new(name, image) +
@@ -89,4 +100,9 @@ local persistentVolumeClaim = kube.core.v1.persistentVolumeClaim;
       persistentVolumeClaim.spec.withStorageClassName('nfs') +
       persistentVolumeClaim.spec.withAccessModes(['ReadWriteMany']) +
       persistentVolumeClaim.spec.resources.withRequests(pv.spec.capacity),
+
+  stringDataEncode(stringData):: {
+    [field.key]: std.base64(field.value)
+    for field in std.objectKeysValues(stringData)
+  },
 }

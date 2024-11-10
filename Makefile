@@ -13,7 +13,6 @@ clean:
 
 update: setup_done
 	scripts/update_check
-	git -P diff
 
 diff:
 	for app in `ls tanka/environments`; do \

@@ -43,10 +43,8 @@ def main():
 # "followTag" is a tag that *should* follow a versioned release. Poll the tags of the image to find the version tag
 # that matches its digest and use that.
 # Once done, format the results back through jsonnetfmt and write to the lib file
-# If any of the images match multiple tags, the script aborts without writing anything
 def check_for_image_updates():
     images: dict[str, ImageDef] = json.loads(_jsonnet.evaluate_file(IMAGES_JSONNET_PATH))['images']
-    will_update_file = True
     for app, detail in images.items():
         if date.fromisoformat(detail.get('lastChecked', "1970-01-01")) == date.today():
             continue
@@ -61,26 +59,27 @@ def check_for_image_updates():
             else:
                 images[app]['image'] = image_updates[0]
         else:
-            print(f"Multiple tags found: {image} -> {image_updates}")
-            will_update_file = False
+            print(f"Multiple tags found, skipping: {image} -> {image_updates}")
         # Commented this out because if I automate this, I don't want a new commit every day from the date change
         # Can just uncomment for rapid testing
         # images[app]['lastChecked'] = str(date.today())
 
-    if will_update_file:
-        output = jsonnetfmt_dumps({'images': images})
-        with open(IMAGES_JSONNET_PATH, "w") as f:
-            f.write(output)
-    else:
-        print("Some images had multiple possible tags. Not updating images lib.")
-        exit(1)
+    output = jsonnetfmt_dumps({'images': images})
+    with open(IMAGES_JSONNET_PATH, "w") as f:
+        f.write(output)
+    print("Updated. Check diffs.")
 
 
 # Check for update to a single image
 def get_image_update(app: str, current_image: str, tag_to_check: str) -> list[str]:
     image_id, current_tag = current_image.rsplit(":", 1)
     image_tag_template = image_id + ":{}"
-    owner, image_name = image_id.rsplit("/", 1)
+    if "/" in image_id:
+        owner, image_name = image_id.rsplit("/", 1)
+    else:
+        # Official Docker Image. Can be queried with namespace/owner "library"
+        owner = "library"
+        image_name = image_id
 
     tags: dict[str, TagData] = {}
 
@@ -124,7 +123,9 @@ def get_image_update(app: str, current_image: str, tag_to_check: str) -> list[st
     if not len(potential_images):
         # If here, this app sucks and doesn't have a tag that follows versioned releases.
         # Resort to checking all tags that match the regex to see if any are newer than the current tag
-        newest_tag_date = tags[current_tag]['tag_last_pushed']
+        tag_detail_url = f'https://hub.docker.com/v2/namespaces/{owner}/repositories/{image_name}/tags/{current_tag}'
+        tag_detail = json.loads(requests.get(tag_detail_url).text)
+        newest_tag_date = tag_detail['tag_last_pushed']
         newest_tag = current_tag
         for tag, data in tags.items():
             if re.match(TAG_REGEX.get(app, '.*'), tag) and 'tag_last_pushed' in data.keys():
@@ -190,7 +191,7 @@ def write_upgrade_plan_file(new_version: str):
     new_file_contents = ""
     with open(UPGRADE_PLAN_PATH, "r+") as file:
         for line in file:
-            if 'version' in line and '+k3s1' in line:
+            if 'version' in line and '+k3s' in line:
                 new_file_contents += f"  version: {new_version}\n"
             else:
                 new_file_contents += line

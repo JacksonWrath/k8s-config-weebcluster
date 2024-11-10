@@ -1,12 +1,8 @@
 {
   images: {
-    node_exporter: {
-      followTag: 'latest',
-      image: 'prom/node-exporter:v1.8.1',
-    },
     graphite_exporter: {
       followTag: 'latest',
-      image: 'prom/graphite-exporter:v0.15.1',
+      image: 'prom/graphite-exporter:v0.16.0',
     },
     kube_state_metrics: {
       followTag: '2.12.0',
@@ -14,16 +10,20 @@
     },
     matrix_synapse: {
       followTag: 'latest',
-      image: 'matrixdotorg/synapse:v1.115.0'
+      image: 'matrixdotorg/synapse:v1.115.0',
+    },
+    node_exporter: {
+      followTag: 'latest',
+      image: 'prom/node-exporter:v1.8.2',
     },
     pihole: {
       followTag: 'latest',
-      image: 'pihole/pihole:2024.05.0',
-      prepullImage: 'pihole/pihole:2024.05.0',
+      image: 'pihole/pihole:2024.07.0',
+      prepullImage: 'pihole/pihole:2024.07.0',
     },
     plex: {
       followTag: 'latest',
-      image: 'plexinc/pms-docker:1.40.5.8921-836b34c27',
+      image: 'plexinc/pms-docker:1.41.1.9057-af5eaea7a',
     },
     promtail: {
       followTag: 'latest',
@@ -31,23 +31,23 @@
     },
     prowlarr: {
       followTag: 'release',
-      image: 'hotio/prowlarr:release-1.17.2.4511',
+      image: 'hotio/prowlarr:release-1.25.4.4818',
     },
     qbittorrent: {
       followTag: 'release',
-      image: 'hotio/qbittorrent:release-4.6.5',
+      image: 'hotio/qbittorrent:release-5.0.1',
     },
     radarr: {
       followTag: 'release',
-      image: 'hotio/radarr:release-5.6.0.8846',
+      image: 'hotio/radarr:release-5.14.0.9383',
     },
     sonarr: {
       followTag: 'release',
-      image: 'hotio/sonarr:release-4.0.4.1491',
+      image: 'hotio/sonarr:release-4.0.10.2544',
     },
     tautulli: {
       followTag: 'latest',
-      image: 'tautulli/tautulli:v2.14.2',
+      image: 'tautulli/tautulli:v2.14.6',
     },
     ubuntu: {
       followTag: 'noble',

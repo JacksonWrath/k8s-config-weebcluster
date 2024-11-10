@@ -10,7 +10,9 @@ local certManagerEnv = {
     chartId: 'cert-manager',
     targetNamespace: namespace,
     values: {
-      installCRDs: true,
+      crds: {
+        enabled: true,
+      },
     },
   },
 

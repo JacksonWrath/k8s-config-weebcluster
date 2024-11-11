@@ -62,7 +62,7 @@
           "subdir": "production/ksonnet/loki"
         }
       },
-      "version": "v3.0.0"
+      "version": "v3.2.1"
     },
     {
       "source": {
@@ -71,7 +71,7 @@
           "subdir": "production/ksonnet/promtail"
         }
       },
-      "version": "v3.0.0"
+      "version": "v3.2.1"
     },
     {
       "source": {
@@ -80,7 +80,7 @@
           "subdir": "production/loki-mixin"
         }
       },
-      "version": "main"
+      "version": "v3.2.1"
     },
     {
       "source": {

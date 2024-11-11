@@ -28,7 +28,7 @@ local dashboardsLib = import 'grafana/dashboards.libsonnet';
 local grafanaEnv = {
   namespace: k.core.v1.namespace.new(namespace),
   grafanaApp: grafana
-    + grafana.withImage('grafana/grafana:11.1.0')
+    + grafana.withImage('grafana/grafana:11.3.0')
     + grafana.withRootUrl('https://' + hostname)
     + grafana.withTheme('dark')
     + grafana.withAnonymous()

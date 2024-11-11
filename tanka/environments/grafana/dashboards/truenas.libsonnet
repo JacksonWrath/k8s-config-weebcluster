@@ -3,7 +3,7 @@
   // The ones I'm sourcing were designed for UI import; they need to be modified to not rely on input from that, and
   // instead just have another variable for the datasource (that's how the node-exporter-full dashbaord works)
   local truenasStr = importstr 'truenas-graphite-to-prometheus/dashboards/truenas_scale.json',
-  local diskInsightsStr = importstr 'truenas-graphite-to-prometheus/dashboards/truenas_scale_disk_inisghts.json',
+  local diskInsightsStr = importstr 'truenas-graphite-to-prometheus/dashboards/truenas_scale_disk_insights.json',
   local truenasDashboard = std.parseJson(std.strReplace(truenasStr, 'DS_MIMIR', 'datasource')),
   local diskInsightsDashboard = std.parseJson(std.strReplace(diskInsightsStr, 'DS_MIMIR', 'datasource')),
 

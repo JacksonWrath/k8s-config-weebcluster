@@ -55,7 +55,7 @@
     },
     unifiNetworkApplication: {
       followTag: 'latest',
-      image: 'linuxserver/unifi-network-application:version-8.5.6',
+      image: 'linuxserver/unifi-network-application:version-8.6.9',
     },
   },
 }

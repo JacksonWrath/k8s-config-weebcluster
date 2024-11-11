@@ -122,7 +122,7 @@
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/prometheus-operator-libsonnet.git",
-          "subdir": "0.72"
+          "subdir": "0.77"
         }
       },
       "version": "main",
@@ -155,7 +155,7 @@
           "subdir": "jsonnet"
         }
       },
-      "version": "v0.75.1",
+      "version": "v0.77.2",
       "name": "prometheus-operator"
     },
     {

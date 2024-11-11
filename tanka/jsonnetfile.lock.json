@@ -205,11 +205,11 @@
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/prometheus-operator-libsonnet.git",
-          "subdir": "0.72"
+          "subdir": "0.77"
         }
       },
       "version": "8055c684fc951ae857bd0e09cf14cb2aeb57b813",
-      "sum": "Z1num0+xhx+2tVyRO+2GGuk+/aAUSCxDiUIhE1tyDGo=",
+      "sum": "pjNJAI6ch15p0EwHy50FKncuXVcghJwrIKD578Ho8NU=",
       "name": "prometheus"
     },
     {
@@ -251,8 +251,8 @@
           "subdir": "jsonnet"
         }
       },
-      "version": "e1136aac87ad8a8489fee94f8c9dcb8a7e6a7f18",
-      "sum": "ycZJNCzyNffmF0wLIp7Tpob/zKtoQwUhj6Hlvt+khUc=",
+      "version": "8520433fb94788cc92dd67747d41cda2f775c132",
+      "sum": "Zq5k2a5OXduMMA9VW1jRES98cmdzGLG9DU8EJHLmRpY=",
       "name": "prometheus-operator"
     },
     {

@@ -8,7 +8,7 @@ local resourceRule = k.authorization.v1.resourceRule;
 
 {
   // Note, expects secret name "<username>-password" to exist with the password to use when first created
-  newReplicaSet(name, version, username):: {
+  newReplicaSet(name, version, username, dbname=''):: {
     apiVersion: 'mongodbcommunity.mongodb.com/v1',
     kind: 'MongoDBCommunity',
     metadata: {
@@ -38,6 +38,15 @@ local resourceRule = k.authorization.v1.resourceRule;
             {
               name: 'userAdminAnyDatabase',
               db: 'admin',
+            },
+          ] + if dbname == '' then [] else [
+            {
+              name: 'dbOwner',
+              db: dbname,
+            },
+            {
+              name: 'dbOwner',
+              db: dbname + '_stat',
             }
           ],
           scramCredentialsSecretName: 'my-scram',

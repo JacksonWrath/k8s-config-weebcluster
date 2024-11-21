@@ -1,13 +1,19 @@
 local k = import 'k.libsonnet';
 local weebcluster = import 'weebcluster.libsonnet';
+local utils = import 'utils.libsonnet';
 local homelab = import 'homelab.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
 local grafana = import 'grafana/grafana.libsonnet';
 
 local envName = 'grafana';
 local namespace = 'grafana';
-local subdomain = 'grafana';
-local hostname = subdomain + '.' + homelab.defaultDomain;
+
+local appConfig = weebcluster.defaultAppConfig + {
+  appName: 'grafana',
+  subdomain: 'grafana',
+};
+
+local hostname = appConfig.subdomain + '.' + homelab.defaultDomain;
 
 local datasources = {
   loki: grafana.datasource.new('Loki', 'http://gateway.loki', 'loki')
@@ -51,7 +57,7 @@ local grafanaEnv = {
         }
       },
 
-  ingress: weebcluster.newStandardHttpIngress('grafana', subdomain, self.grafanaApp.grafana_service),
+  ingress: utils.newStandardHttpIngress(self.grafanaApp.grafana_service, appConfig),
 };
 
 // Possible config I'll need later for postgres setup

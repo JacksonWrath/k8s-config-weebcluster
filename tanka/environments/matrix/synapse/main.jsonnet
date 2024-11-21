@@ -1,5 +1,4 @@
 local weebcluster = import 'weebcluster.libsonnet';
-local homelab = import 'homelab.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
 local utils = import 'utils.libsonnet';
 local k = import 'k.libsonnet';
@@ -14,12 +13,13 @@ local podTemplateSpec = k.apps.v1.deployment.spec.template.spec;
 local envName = 'matrixSynapse';
 local namespace = 'matrix-synapse';
 
-local appName = 'matrix-synapse';
-local image = weebcluster.images.matrix_synapse.image;
-local configVolSize = '10Gi';
-local httpPortNumber = 8080;
-local ingressSubdomain = '3d1b';
-local additionalLabels = {};
+local appConfig = {
+  appName: 'matrix-synapse',
+  image: weebcluster.images.matrix_synapse.image,
+  configVolSize: '10Gi',
+  httpPortNumber: 8080,
+  subdomain: '3d1b',
+};
 
 // Environment
 local matrixSynapseEnv = {
@@ -39,7 +39,7 @@ local matrixSynapseEnv = {
     volume.fromConfigMap('logging-config', 'logging-config', [{key: '3d1b.log.config', path: '3d1b.log.config'}]),
   ],
 
-  synapseApp: weebcluster.newStandardApp(appName, image, configVolSize, httpPortNumber, ingressSubdomain, additionalLabels) +
+  synapseApp: weebcluster.newStandardApp(appConfig) +
   {
     local configFileVolumeMount = volumeMount.new('config-file', '/config/homeserver.yaml')
       + volumeMount.withSubPath('homeserver.yaml'),

@@ -11,17 +11,19 @@ local podTemplateSpec = kube.apps.v1.deployment.spec.template.spec;
 local envName = 'plex';
 local namespace = 'plex';
 
+local appConfig = {
+  appName: 'plex',
+  image: weebcluster.images.plex.image,
+  subdomain: 'satsuki',
+  configVolSize: '100Gi',
+  httpPortNumber: 32400,
+};
+
 local plexEnvironment = {
-  local appName = 'plex',
-  local plexImage = weebcluster.images.plex.image,
-  local promtailImage = weebcluster.images.promtail.image,
-  local ingressSubdomain = 'satsuki',
-  local configVolSize = '100Gi',
-  local httpPortNumber = 32400,
   local primaryNfs = homelab.nfs.currentPrimary,
 
   // Transcoding volume
-  transcodingPvc: weebcluster.newStandardPVC('plex-transcode', '20Gi'),
+  transcodingPvc: utils.newStandardPVC('plex-transcode', '20Gi', weebcluster.defaultStorageClass),
 
   // Promtail config ConfigMap
   local promtailConfig = std.manifestYamlDoc(import 'promtail-config.jsonnet', quote_keys=false),
@@ -35,14 +37,14 @@ local plexEnvironment = {
   ],
 
   // Promtail container
-  local promtailContainer = container.new('promtail', promtailImage) +
+  local promtailContainer = container.new('promtail', weebcluster.images.promtail.image) +
     container.withArgs(['-config.file=/etc/promtail/promtail.yaml']) +
     container.withVolumeMounts([
       volumeMount.new('promtail-config', '/etc/promtail'),
       volumeMount.new('config', '/config/plex-volume', true),
     ]),
 
-  plexApp: weebcluster.newStandardApp(appName, plexImage, configVolSize, httpPortNumber, ingressSubdomain) {
+  plexApp: weebcluster.newStandardApp(appConfig) {
     container+:: container.withVolumeMountsMixin([
       volumeMount.new('plex-transcode', '/transcode'),
       volumeMount.new('plex-media', '/media/plex'),

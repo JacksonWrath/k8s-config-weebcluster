@@ -14,13 +14,16 @@ local volumeMount = kube.core.v1.volumeMount;
 local envName = 'qbittorrent';
 local namespace = 'qbittorrent';
 
+local appConfig = {
+  appName: 'qbittorrent',
+  image: weebcluster.images.qbittorrent.image,
+  subdomain: 'vash',
+  configVolSize: '1Gi',
+  httpPortNumber: 8080,
+};
+
 local qbittorrentEnvironment = {
-  local appName = 'qbittorrent',
-  local qbImage = weebcluster.images.qbittorrent.image,
   local wgImage = 'ghcr.io/k8s-at-home/wireguard:v1.0.20210914',
-  local ingressSubdomain = 'vash',
-  local configVolSize = '1Gi',
-  local httpPortNumber = 8080,
   local primaryNfs = homelab.nfs.currentPrimary,
 
   // Wireguard container
@@ -53,7 +56,7 @@ local qbittorrentEnvironment = {
     ),
   ],
 
-  qbittorrentApp: weebcluster.newStandardApp(appName, qbImage, configVolSize, httpPortNumber, ingressSubdomain) {
+  qbittorrentApp: weebcluster.newStandardApp(appConfig) {
     local sysctls = [{name: 'net.ipv4.conf.all.src_valid_mark', value: '1'}],
     local envMap = {PUID: '1000', PGID: '1000'},
     container+::

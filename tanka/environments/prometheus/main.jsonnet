@@ -1,4 +1,6 @@
 local weebcluster = import 'weebcluster.libsonnet';
+local utils = import 'utils.libsonnet';
+local homelab = import 'homelab.libsonnet';
 local k = import 'k.libsonnet';
 
 // prometheus resources
@@ -13,7 +15,11 @@ local envName = 'prometheus';
 local namespace = 'prometheus';
 
 local clusterName = 'prometheus-1';
-local webUISubdomain = 'prometheus';
+
+local appConfig = weebcluster.defaultAppConfig + {
+  appName: clusterName,
+  subdomain: 'prometheus',
+};
 
 local prometheusEnv = {
   namespace: k.core.v1.namespace.new(namespace),
@@ -74,7 +80,7 @@ local prometheusEnv = {
   local servicePort = k.core.v1.servicePort.newNamed('web', 9090, 'web'),
   service: k.core.v1.service.new(clusterName, {prometheus: clusterName}, servicePort),
 
-  ingress: weebcluster.newStandardIngress(clusterName, webUISubdomain, self.service, servicePort)
+  ingress: utils.newStandardIngress(self.service, servicePort, appConfig),
 };
 
 weebcluster.newTankaEnv(envName, namespace, prometheusEnv)

@@ -1,6 +1,4 @@
 local weebcluster = import 'weebcluster.libsonnet';
-local utils = import 'utils.libsonnet';
-local homelab = import 'homelab.libsonnet';
 local kube = import 'k.libsonnet';
 
 // API object aliases
@@ -10,18 +8,20 @@ local podTemplateSpec = kube.apps.v1.deployment.spec.template.spec;
 local envName = 'radarr';
 local namespace = 'radarr';
 
-local radarrEnvironment = {
-  local appName = 'radarr',
-  local image = weebcluster.images.radarr.image,
-  local ingressSubdomain = 'nozomi',
-  local configVolSize = '10Gi',
-  local httpPortNumber = 7878,
+local appConfig = {
+  appName: 'radarr',
+  image: weebcluster.images.radarr.image,
+  subdomain: 'nozomi',
+  configVolSize: '10Gi',
+  httpPortNumber: 7878,
+};
 
+local radarrEnvironment = {
   namespace: kube.core.v1.namespace.new(namespace),
 
-  mediaVol: weebcluster.newNfsVolumeNolock(appName, 'media'),
+  mediaVol: weebcluster.newNfsVolumeNolock(appConfig.appName, 'media'),
 
-  radarrApp: weebcluster.newStandardApp(appName, image, configVolSize, httpPortNumber, ingressSubdomain) {
+  radarrApp: weebcluster.newStandardApp(appConfig) {
     local envMap = {PUID: '1000', PGID: '1000'},
     container+::
       container.withEnvMap(envMap) +

@@ -15,30 +15,35 @@ local podTemplateSpec = kube.apps.v1.deployment.spec.template.spec;
 
 local envName = 'pihole';
 local namespace = 'pihole';
+local appName = 'pihole';
+
+local appConfig = weebcluster.defaultAppConfig + {
+  appName: appName,
+  ingressName: 'pihole-console',
+  subdomain: 'saika',
+  configVolSize: '10Gi',
+  httpPortNumber: 80,
+};
+
+local prepullImage = weebcluster.images.pihole.prepullImage;
+local piholeImage = weebcluster.images.pihole.image;
+local dnsPortNumber = 53;
+local dnsIp = '10.2.69.11';
+
+local labels = {
+  app: appName,
+};
 
 local piholeEnvironment = {
-  local appName = 'pihole',
-  local prepullImage = weebcluster.images.pihole.prepullImage,
-  local piholeImage = weebcluster.images.pihole.image,
-  local ingressSubdomain = 'saika',
-  local configVolSize = '10Gi',
-  local httpPortNumber = 80,
-  local dnsPortNumber = 53,
-  local dnsIp = '10.2.69.11',
-
-  local labels = {
-    app: appName,
-  },
-
   namespace: kube.core.v1.namespace.new(namespace),
 
-  configVolume: weebcluster.newConfigVolume(configVolSize, labels) {
+  configVolume: utils.newConfigVolume(appConfig.configVolSize, weebcluster.defaultStorageClass, labels) {
     volumeMount+:: volumeMount.withMountPath('/etc/pihole'),
   },
 
   local dnsmasqVolName = 'dnsmasq-dot-d',
   dnsmasqVolume: {
-    pvc: weebcluster.newStandardPVC(dnsmasqVolName, '10Mi', labels),
+    pvc: utils.newStandardPVC(dnsmasqVolName, '10Mi', weebcluster.defaultStorageClass, labels),
     volume:: utils.newVolumeFromPVC(dnsmasqVolName, self.pvc),
     volumeMount:: volumeMount.new(dnsmasqVolName, '/etc/dnsmasq.d'),
   },
@@ -46,7 +51,7 @@ local piholeEnvironment = {
   local piholeEnvMap = {
     TZ: 'US/Pacific',
   },
-  local piholeContainer = utils.newHttpContainer(appName, piholeImage, httpPortNumber) +
+  local piholeContainer = utils.newHttpContainer(appName, piholeImage, appConfig.httpPortNumber) +
     container.withEnvMap(piholeEnvMap) + 
     container.withPortsMixin(utils.generateDnsContainerPorts()) +
     container.withVolumeMounts([self.configVolume.volumeMount, self.dnsmasqVolume.volumeMount]),
@@ -58,10 +63,7 @@ local piholeEnvironment = {
   piholeConsoleService: utils.newHttpService(appName + '-console', selectorLabels),  
   piholeDnsService: utils.newDnsService(appName + '-dns', selectorLabels, dnsIp),
 
-  piholeConsoleIngress: weebcluster.newStandardHttpIngress(
-      name=appName + '-console',
-      subdomain=ingressSubdomain,
-      service=self.piholeConsoleService) +
+  piholeConsoleIngress: utils.newStandardHttpIngress(self.piholeConsoleService, appConfig) +
     ingress.metadata.withAnnotationsMixin({'nginx.ingress.kubernetes.io/app-root': '/admin'}),
 
   ##

@@ -12,16 +12,18 @@ local containerPort = k.core.v1.containerPort;
 // Environment definitions
 local envName = 'unifiNetworkApplication';
 local namespace = 'unifi-network-application';
-local appName = namespace;
 
 // App configs
-local image = weebcluster.images.unifiNetworkApplication.image;
+local appConfig = weebcluster.defaultAppConfig + {
+  appName: 'unifi-network-application',
+  image: weebcluster.images.unifiNetworkApplication.image,
+  configVolSize: '20Gi',
+  subdomain: 'junko',
+};
 local mongodbVersion = '7.0.12'; // Make sure the Unifi application supports the new version before upgrading
-local ingressSubdomain = 'junko';
-local configVolSize = '20Gi';
 local externalIP = '10.2.69.20';
 local labels = {
-  app: appName,
+  app: appConfig.appName,
 };
 
 // MongoDB configs
@@ -67,7 +69,7 @@ local unifiNetworkApplicationEnv = {
   local firstRunSecretName = dbUsername + '-password',
   firstRunSecret: k.core.v1.secret.new(firstRunSecretName, utils.stringDataEncode(private.unifi.secretStringData)),
 
-  configVolume: weebcluster.newConfigVolume(configVolSize, labels),
+  configVolume: utils.newConfigVolume(appConfig.configVolSize, weebcluster.defaultStorageClass, labels),
   systemProperties: {
     local configMapData = {'system.properties': importstr 'system.properties'},
     configMap: k.core.v1.configMap.new('system-properties', configMapData),
@@ -82,7 +84,7 @@ local unifiNetworkApplicationEnv = {
   guestHttpPort:: containerPort.newNamed(8880, 'guest-http'),
   guestHttpsPort:: containerPort.newNamed(8843, 'guest-https'),
 
-  unifiContainer:: utils.newHttpContainer(appName, image, 8443) // 8443 is the admin UI
+  unifiContainer:: utils.newHttpContainer(appConfig.appName, appConfig.image, 8443) // 8443 is the admin UI
     + container.withPortsMixin([
         self.stunPort,
         self.discoveryPort,
@@ -99,18 +101,18 @@ local unifiNetworkApplicationEnv = {
         self.systemProperties.volumeMount,
       ]),
 
-  unifiDeployment: utils.newSinglePodDeployment(appName, self.unifiContainer, labels)
+  unifiDeployment: utils.newSinglePodDeployment(appConfig.appName, self.unifiContainer, labels)
     + k.apps.v1.deployment.spec.template.spec.withVolumes([
         self.configVolume.volume,
         self.systemProperties.volume,
       ]),
 
-  unifiService: utils.newServiceFromContainerPorts(appName, labels, self.unifiContainer.ports)
+  unifiService: utils.newServiceFromContainerPorts(appConfig.appName, labels, self.unifiContainer.ports)
     + service.spec.withType('LoadBalancer')
     + service.spec.withExternalTrafficPolicy('Local')
     + service.metadata.withAnnotations({'metallb.universe.tf/loadBalancerIPs': externalIP}),
 
-  unifiIngress: weebcluster.newStandardHttpIngress(appName, ingressSubdomain, self.unifiService)
+  unifiIngress: utils.newStandardHttpIngress(self.unifiService, appConfig)
     + k.networking.v1.ingress.metadata.withAnnotationsMixin({'nginx.ingress.kubernetes.io/backend-protocol': 'HTTPS'}),
 };
 

@@ -1,6 +1,4 @@
 local weebcluster = import 'weebcluster.libsonnet';
-local utils = import 'utils.libsonnet';
-local homelab = import 'homelab.libsonnet';
 local kube = import 'k.libsonnet';
 
 // API object aliases
@@ -10,18 +8,20 @@ local podTemplateSpec = kube.apps.v1.deployment.spec.template.spec;
 local envName = 'sonarr';
 local namespace = 'sonarr';
 
-local sonarrEnvironment = {
-  local appName = 'sonarr',
-  local image = weebcluster.images.sonarr.image,
-  local ingressSubdomain = 'nozaki',
-  local configVolSize = '10Gi',
-  local httpPortNumber = 8989,
+local appConfig = {
+  appName: 'sonarr',
+  image: weebcluster.images.sonarr.image,
+  subdomain: 'nozaki',
+  configVolSize: '10Gi',
+  httpPortNumber: 8989,
+};
 
+local sonarrEnvironment = {
   namespace: kube.core.v1.namespace.new(namespace),
 
-  mediaVol: weebcluster.newNfsVolumeNolock(appName, 'media'),
+  mediaVol: weebcluster.newNfsVolumeNolock(appConfig.appName, 'media'),
 
-  sonarrApp: weebcluster.newStandardApp(appName, image, configVolSize, httpPortNumber, ingressSubdomain) {
+  sonarrApp: weebcluster.newStandardApp(appConfig) {
     local envMap = {PUID: '1000', PGID: '1000'},
     container+::
       container.withEnvMap(envMap) +

@@ -14,6 +14,10 @@ local homelab = import 'homelab.libsonnet';
   nvme_storage_class: 'nvme-rook-ceph',
   defaultStorageClass: self.nvme_storage_class,
   nginxIngressClass: 'nginx',
+  clusterCidrs: {
+    podCidr: '10.69.20.0/22',
+    serviceCidr: '10.69.24.0/22',
+  },
 
   defaultAppConfig: utils.appConfig + {
     configVolStorageClass: weebcluster.defaultStorageClass,

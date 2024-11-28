@@ -1,5 +1,13 @@
 {
   images: {
+    gluetun: {
+      followTag: 'v3',
+      image: 'qmcgaw/gluetun:v3.39.1',
+    },
+    port_updater: {
+      followTag: 'latest',
+      image: 'ghcr.io/jacksonwrath/gluetun-qbt-port-updater:v1.0.1',
+    },
     graphite_exporter: {
       followTag: 'latest',
       image: 'prom/graphite-exporter:v0.16.0',

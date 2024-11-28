@@ -75,10 +75,10 @@ local persistentVolumeClaim = kube.core.v1.persistentVolumeClaim;
     volume.persistentVolumeClaim.withClaimName(persistentVolumeClaim.metadata.name),
 
   // Generate a Volume object that's populated from a Secret
-  newSecretVolume(secretName, keyName, path)::
+  newSecretVolume(secretName, keyName=null, path=null)::
     volume.withName(secretName) + 
     volume.secret.withSecretName(secretName) +
-    volume.secret.withItems([{key: keyName, path: path}]),
+    if keyName != null && path != null then volume.secret.withItems([{key: keyName, path: path}]) else {},
   
   // Generate a Volume object for an NFS server
   newNfsVolume(name, server, path, readOnly=false)::

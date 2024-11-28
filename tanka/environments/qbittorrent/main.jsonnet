@@ -2,14 +2,13 @@ local weebcluster = import 'weebcluster.libsonnet';
 local utils = import 'utils.libsonnet';
 local homelab = import 'homelab.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
-local kube = import 'k.libsonnet';
+local k = import 'k.libsonnet';
 
 // API object aliases
-local podTemplateSpec = kube.apps.v1.deployment.spec.template.spec;
-local container = kube.core.v1.container;
-local volume = kube.core.v1.volume;
-local volumeMount = kube.core.v1.volumeMount;
-
+local podTemplateSpec = k.apps.v1.deployment.spec.template.spec;
+local container = k.core.v1.container;
+local volume = k.core.v1.volume;
+local volumeMount = k.core.v1.volumeMount;
 
 local envName = 'qbittorrent';
 local namespace = 'qbittorrent';
@@ -23,32 +22,36 @@ local appConfig = {
 };
 
 local qbittorrentEnvironment = {
-  local wgImage = 'ghcr.io/k8s-at-home/wireguard:v1.0.20210914',
+  namespace: k.core.v1.namespace.new(namespace),
   local primaryNfs = homelab.nfs.currentPrimary,
 
-  // Wireguard container
-  local wireguardContainer = container.new('wireguard', wgImage) +
-    container.securityContext.capabilities.withAdd(['NET_ADMIN', 'SYS_MODULE']) +
-    container.withVolumeMounts([
-      volumeMount.new('wireguard-wg0-secret', '/etc/wireguard/wg0.conf') + volumeMount.withSubPath('wg0.conf')
-    ]) +
-    container.withEnvMap({
-      IPTABLES_BACKEND: 'legacy',
-      KILLSWITCH: 'true',
-      KILLSWITCH_EXCLUDEDNETWORKS_IPV4: '10.69.20.0/22',
-    }),
+  // Gluetun wireguard secret
+  wireguardSecret: k.core.v1.secret.new(
+    name='wireguard-config',
+    data=utils.stringDataEncode({'wg0.conf': private.wireguard.gluetun_secret_stringData}),
+  ),
 
-  // Wireguard secret
-  wireguardSecret: kube.core.v1.secret.new('wireguard-wg0-secret', '') + {data::''} +
-    kube.core.v1.secret.withStringData({'wg0_ipv4.conf': private.wireguard.secret_stringData}),
+  // Gluetun auth config secret
+  authConfigSecret: k.core.v1.secret.new(
+    name='auth-config',
+    data=utils.stringDataEncode({'config.toml': private.gluetun.qbt.authConfig}),
+  ),
+
+  // Gluetun doesn't have a way to allow additional inbound subnets, and Calico is breaking the
+  // LAN subnet detection because it sets the default route to 169.254.1.1
+  // Thankfully Gluetun does provide a way to specify additional iptables rules.
+  iptablesConfigMap: k.core.v1.configMap.new('iptables-rules', {
+    'post-rules.txt': |||
+      iptables -A INPUT -i eth0 -s %(podCidr)s -j ACCEPT
+      iptables -A OUTPUT -o eth0 -d %(podCidr)s -j ACCEPT
+    ||| % weebcluster.clusterCidrs,
+  }),
 
   // Additional volumes on deployment
   local additionalVolumes = [
-    utils.newSecretVolume(
-      secretName='wireguard-wg0-secret',
-      keyName='wg0_ipv4.conf',
-      path='wg0.conf'
-    ),
+    utils.newSecretVolume(self.wireguardSecret.metadata.name),
+    utils.newSecretVolume(self.authConfigSecret.metadata.name),
+    k.core.v1.volume.fromConfigMap(self.iptablesConfigMap.metadata.name, self.iptablesConfigMap.metadata.name),
     utils.newNfsVolume(
       name='qbittorrent-nfs',
       server=primaryNfs.server,
@@ -56,16 +59,40 @@ local qbittorrentEnvironment = {
     ),
   ],
 
+  // Gluetun container
+  local gluetunContainer = container.new('gluetun', weebcluster.images.gluetun.image) +
+    container.securityContext.capabilities.withAdd(['NET_ADMIN']) +
+     // Setting "restartPolicy: Always" on an initContainer identifies it as a sidecar; beta feature in k8s 1.29
+    container.withRestartPolicy("Always") +
+    container.withEnvMap({
+      VPN_SERVICE_PROVIDER: 'custom',
+      VPN_TYPE: 'wireguard',
+      VPN_PORT_FORWARDING: 'on',
+      VPN_PORT_FORWARDING_PROVIDER: 'protonvpn',
+      HTTP_CONTROL_SERVER_LOG: 'off',
+    }) +
+    container.withVolumeMounts([
+      volumeMount.new(self.wireguardSecret.metadata.name, '/gluetun/wireguard'),
+      volumeMount.new(self.authConfigSecret.metadata.name, '/gluetun/auth'),
+      volumeMount.new(self.iptablesConfigMap.metadata.name, '/iptables'),
+    ]),
+
+  // Port-forwarding sync container
+  local portUpdaterContainer = container.new('port-updater', weebcluster.images.port_updater.image) +
+    container.withEnvMap({
+      QBT_USERNAME: private.qbittorrent.username,
+      QBT_PASSWORD: private.qbittorrent.password,
+    }),
+
   qbittorrentApp: weebcluster.newStandardApp(appConfig) {
-    local sysctls = [{name: 'net.ipv4.conf.all.src_valid_mark', value: '1'}],
     local envMap = {PUID: '1000', PGID: '1000'},
     container+::
       container.withEnvMap(envMap) +
       container.withVolumeMountsMixin([volumeMount.new('qbittorrent-nfs', '/data/qbittorrent')]),
     deployment+: 
-      kube.apps.v1.deployment.spec.selector.withMatchLabels({app: 'qbittorrent'}) +
-      podTemplateSpec.securityContext.withSysctls(sysctls) +
-      podTemplateSpec.withContainersMixin([wireguardContainer]) +
+      k.apps.v1.deployment.spec.selector.withMatchLabels({app: 'qbittorrent'}) +
+      podTemplateSpec.withInitContainersMixin([gluetunContainer]) +
+      podTemplateSpec.withContainersMixin([portUpdaterContainer]) +
       podTemplateSpec.withVolumesMixin(additionalVolumes),
   },
 };

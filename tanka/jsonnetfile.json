@@ -31,6 +31,16 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/cloudnative-pg/cloudnative-pg.git",
+          "subdir": "releases"
+        }
+      },
+      "version": "main",
+      "name": "cnpg-operator"
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/grafana/jsonnet-libs.git",
           "subdir": "grafana"
         }
@@ -99,6 +109,16 @@
         }
       },
       "version": "main"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/jsonnet-libs/cloudnative-pg-libsonnet.git",
+          "subdir": "1.24.1"
+        }
+      },
+      "version": "main",
+      "name": "cnpg"
     },
     {
       "source": {

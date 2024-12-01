@@ -8,8 +8,8 @@
           "subdir": "libsonnet-secrets"
         }
       },
-      "version": "dc3fb59865e77c1cd716ad0ffcba6cb3873e4700",
-      "sum": "BWkaq+btJwDTRAdV84yw8HZ3uAIcq14L9E70Aizu43s="
+      "version": "4db3e5555e0cf35c3e6c9b42a94f62a1d4acc9eb",
+      "sum": "gskmmp8pegw7s2Ewoc9lZr0TgXdh+40CcXj3oFOhmeA="
     },
     {
       "source": {
@@ -30,6 +30,17 @@
       },
       "version": "47e9c8560e2d9fd9ad071ae5ee9e0f7a01c6b415",
       "sum": "ZnyCIu25NBI6Q3Ru7QK1DHf7DBMEURSMQdEJXzCyIgA="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/cloudnative-pg/cloudnative-pg.git",
+          "subdir": "releases"
+        }
+      },
+      "version": "28bcc2cc18736705713660e0f711d55d91a89c2c",
+      "sum": "TuT5yCXfToIDjrrULvYuVWEwVP73yW3EYUX0RY/4m2w=",
+      "name": "cnpg-operator"
     },
     {
       "source": {
@@ -180,6 +191,17 @@
       },
       "version": "55f47f87ddfbd3d15dbaeca80fc3d1fd7c088eaf",
       "sum": "esuQaszN4/9lG6LsBJOt8+cxYa2T0h2Wm0yACCUDv6Y="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/jsonnet-libs/cloudnative-pg-libsonnet.git",
+          "subdir": "1.24.1"
+        }
+      },
+      "version": "a5c0be4de8c669ada66239822992aedc45952bc9",
+      "sum": "MYxuYRVVqfGtktnXItLiny4k+Vlz/iRH1twjFJvUS+E=",
+      "name": "cnpg"
     },
     {
       "source": {

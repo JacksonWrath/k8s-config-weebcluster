@@ -1,5 +1,9 @@
 {
   images: {
+    cnpgPostgres: {
+      followTag: '17',
+      image: 'ghcr.io/cloudnative-pg/postgresql:17.2',
+    },
     gluetun: {
       followTag: 'v3',
       image: 'qmcgaw/gluetun:v3.39.1',
@@ -7,6 +11,10 @@
     port_updater: {
       followTag: 'latest',
       image: 'ghcr.io/jacksonwrath/gluetun-qbt-port-updater:v1.0.1',
+    },
+    grafana: {
+      followTag: 'latest',
+      image: 'grafana/grafana:11.3.1',
     },
     graphite_exporter: {
       followTag: 'latest',

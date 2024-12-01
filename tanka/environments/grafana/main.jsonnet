@@ -4,6 +4,10 @@ local utils = import 'utils.libsonnet';
 local homelab = import 'homelab.libsonnet';
 local private = import 'libsonnet-secrets/rewt.libsonnet';
 local grafana = import 'grafana/grafana.libsonnet';
+local cnpg = import 'cnpg/main.libsonnet';
+
+// API object aliases
+local pgCluster = cnpg.postgresql.v1.cluster;
 
 local envName = 'grafana';
 local namespace = 'grafana';
@@ -13,7 +17,20 @@ local appConfig = weebcluster.defaultAppConfig + {
   subdomain: 'grafana',
 };
 
-local hostname = appConfig.subdomain + '.' + homelab.defaultDomain;
+local pgClusterName = 'postgres';
+local pgDatabaseName = 'grafana';
+
+local iniConfig = {
+  sections+: {
+    database: {
+      type: 'postgres',
+      host: '%s-rw.%s:5432' % [pgClusterName, namespace],
+      name: pgDatabaseName,
+      user: private.grafana.pgsqlSecretData.username,
+      password: private.grafana.pgsqlSecretData.password,
+    }
+  }
+};
 
 local datasources = {
   loki: grafana.datasource.new('Loki', 'http://gateway.loki', 'loki')
@@ -33,11 +50,22 @@ local dashboardsLib = import 'grafana/dashboards.libsonnet';
 
 local grafanaEnv = {
   namespace: k.core.v1.namespace.new(namespace),
+
+  postgresUserSecret: k.core.v1.secret.new('postgres-user-grafana', {})
+    + k.core.v1.secret.withStringData(private.grafana.pgsqlSecretData),
+
+  postgresCluster: pgCluster.new(pgClusterName)
+    + pgCluster.spec.withImageName(weebcluster.images.cnpgPostgres.image)
+    + pgCluster.spec.withInstances(1)
+    + pgCluster.spec.bootstrap.initdb.withDatabase(pgDatabaseName)
+    + pgCluster.spec.bootstrap.initdb.secret.withName(self.postgresUserSecret.metadata.name)
+    + pgCluster.spec.storage.withSize('1Gi'),
+
   grafanaApp: grafana
-    + grafana.withImage('grafana/grafana:11.3.0')
-    + grafana.withRootUrl('https://' + hostname)
+    + grafana.withImage(weebcluster.images.grafana.image)
+    + grafana.withRootUrl('https://%s.%s' % [appConfig.subdomain, homelab.defaultDomain])
+    + grafana.withGrafanaIniConfig(iniConfig)
     + grafana.withTheme('dark')
-    + grafana.withAnonymous()
     // Datasources
     + grafana.addDatasource('loki', datasources.loki)
     + grafana.addDatasource('prometheus-1', datasources.prometheus1)
@@ -59,24 +87,5 @@ local grafanaEnv = {
 
   ingress: utils.newStandardHttpIngress(self.grafanaApp.grafana_service, appConfig),
 };
-
-// Possible config I'll need later for postgres setup
-
-// local test = {
-//   _config+:: {
-//     grafana_ini+: {
-//       sections+: {
-//         database: {
-//           type: 'postgres',
-//           host: '',
-//           name: 'grafana',
-//           user: '',
-//           password: '',
-//           ssl_mode: 'disable',
-//         },
-//       }
-//     }
-//   },
-// };
 
 weebcluster.newTankaEnv(envName, namespace, grafanaEnv)

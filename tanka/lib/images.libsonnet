@@ -20,6 +20,18 @@
       followTag: 'latest',
       image: 'prom/graphite-exporter:v0.16.0',
     },
+    immich: {
+      followTag: 'release',
+      image: 'ghcr.io/immich-app/immich-server:v1.121.0',
+    },
+    immichPostgres: {
+      followTag: '16-v0.3.0',
+      image: 'ghcr.io/tensorchord/cloudnative-pgvecto.rs:16.5-v0.3.0',
+    },
+    immichML: {
+      followTag: 'release',
+      image: 'ghcr.io/immich-app/immich-machine-learning:v1.121.0',
+    },
     kube_state_metrics: {
       followTag: '2.12.0',
       image: 'bitnami/kube-state-metrics:2.12.0-debian-12-r10',
@@ -56,6 +68,10 @@
     radarr: {
       followTag: 'release',
       image: 'hotio/radarr:release-5.14.0.9383',
+    },
+    redis: {
+      followTag: '6-alpine',
+      image: 'redis:6.2.16-alpine',
     },
     sonarr: {
       followTag: 'release',

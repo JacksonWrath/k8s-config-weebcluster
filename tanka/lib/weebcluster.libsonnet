@@ -12,6 +12,7 @@ local homelab = import 'homelab.libsonnet';
 
   // Cluster constants
   nvme_storage_class: 'nvme-rook-ceph',
+  fs_ephemeral_storage_class: 'fs-ephemeral',
   defaultStorageClass: self.nvme_storage_class,
   nginxIngressClass: 'nginx',
   clusterCidrs: {

@@ -19,6 +19,7 @@ local persistentVolumeClaim = kube.core.v1.persistentVolumeClaim;
 
   // Some generic constants
   nginxIngressAllowAll: {'nginx.ingress.kubernetes.io/whitelist-source-range': '0.0.0.0/0'},
+  nginxIngressLargerBody: {'nginx.ingress.kubernetes.io/proxy-body-size': '10000m'},
   certIssuer: {
     letsencrypt: 'letsencrypt',
     letsencryptStaging: 'letsencrypt-staging',

@@ -1,12 +1,27 @@
 local k = import 'k.libsonnet';
 local weebcluster = import 'weebcluster.libsonnet';
+local utils = import 'utils.libsonnet';
 local helm = import 'k3s-helm.libsonnet';
 local prometheusLib = import 'prometheus/main.libsonnet';
 
 local envName = 'rook-ceph';
 local namespace = 'rook-ceph';
 
-local certManagerEnv = {
+local appConfig = weebcluster.defaultAppConfig + {
+  cephImage: 'quay.io/ceph/ceph:v19.2.0',
+};
+
+local dashboardIngressConfig = appConfig + {
+  appName: 'dashboard',
+  subdomain: 'ceph',
+};
+
+local rgwIngressConfig = appConfig + {
+  appName: 'rgw',
+  subdomain: 'mako',
+};
+
+local rookCephEnv = {
   local chartConfig = {
     chartId: 'rook-ceph',
     targetNamespace: namespace,
@@ -14,9 +29,30 @@ local certManagerEnv = {
 
   namespace: k.core.v1.namespace.new(namespace),
 
-  helmChart: helm.newHelmChart(chartConfig),
-  // This helm chart is just deploying the operator. The actual cluster and other resources are still just plain YAML 
-  // manifests, in the "manifests" folder alongside this file.
+  rookOperatorHelmChart: helm.newHelmChart(chartConfig),
+
+  cephCluster: std.parseYaml(importstr 'manifests/cephcluster.yaml') +
+    {
+      spec+: {
+        cephVersion: {
+          image: appConfig.cephImage,
+        },
+      },
+    },
+
+  // Ingresses
+  // The Ingress utility functions expect the service objects to be passed, just to get the names
+  // Since the operator creates those, minimal placeholder objects are passed
+  dashboardIngress: utils.newStandardIngress(
+    k.core.v1.service.metadata.withName('rook-ceph-mgr-dashboard'), 
+    k.core.v1.servicePort.withName('http-dashboard'), 
+    dashboardIngressConfig,
+  ),
+
+  rgwIngress: utils.newStandardHttpIngress(
+    k.core.v1.service.metadata.withName('rook-ceph-rgw-objectify-me-daddy'),
+    rgwIngressConfig,
+  ),
 
   // ServiceMonitors for Prometheus. Rook sets up these services by default.
   local serviceMonitor = prometheusLib.monitoring.v1.serviceMonitor,
@@ -32,4 +68,4 @@ local certManagerEnv = {
     + serviceMonitor.spec.withEndpoints(serviceMonitor.spec.endpoints.withPort('ceph-exporter-http-metrics')),
 };
 
-weebcluster.newTankaEnv(envName, namespace, certManagerEnv)
+weebcluster.newTankaEnv(envName, namespace, rookCephEnv)

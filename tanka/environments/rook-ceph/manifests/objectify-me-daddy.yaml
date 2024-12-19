@@ -8,10 +8,12 @@ spec:
     failureDomain: host
     replicated:
       size: 3
+    deviceClass: nvme
   dataPool:
     failureDomain: host
     replicated:
       size: 3
+    deviceClass: nvme
   gateway:
     port: 80
     instances: 2

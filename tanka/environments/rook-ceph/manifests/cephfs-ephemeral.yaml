@@ -8,11 +8,13 @@ spec:
     failureDomain: host
     replicated:
       size: 3
+    deviceClass: nvme
   dataPools:
     - name: data-pool-1 # Rook strongly recommends naming these
       failureDomain: host
       replicated:
         size: 3
+      deviceClass: nvme
   preserveFilesystemOnDelete: false
   metadataServer:
     activeCount: 1

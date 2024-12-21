@@ -4,6 +4,13 @@ local utils = import 'utils.libsonnet';
 local helm = import 'k3s-helm.libsonnet';
 local prometheusLib = import 'prometheus/main.libsonnet';
 
+// Aliases
+local role = k.rbac.v1.role;
+local roleBinding = k.rbac.v1.roleBinding;
+local policyRule = k.rbac.v1.policyRule;
+local subject = k.rbac.v1.subject;
+local serviceAccount = k.core.v1.serviceAccount;
+
 local envName = 'rook-ceph';
 local namespace = 'rook-ceph';
 
@@ -54,18 +61,55 @@ local rookCephEnv = {
     rgwIngressConfig,
   ),
 
-  // ServiceMonitors for Prometheus. Rook sets up these services by default.
-  local serviceMonitor = prometheusLib.monitoring.v1.serviceMonitor,
-  mgrServiceMonitor: serviceMonitor.new('ceph-mgr-servicemonitor')
-    + serviceMonitor.spec.selector.withMatchLabels({app: 'rook-ceph-mgr', rook_cluster: 'rook-ceph'})
-    + serviceMonitor.spec.withEndpoints(
-        serviceMonitor.spec.endpoints.withPort('http-metrics')
-          + serviceMonitor.spec.endpoints.withHonorLabels(true),
-      ),
-
-  exporterServiceMonitor: serviceMonitor.new('ceph-exporter-servicemonitor')
-    + serviceMonitor.spec.selector.withMatchLabels({app: 'rook-ceph-exporter', rook_cluster: 'rook-ceph'})
-    + serviceMonitor.spec.withEndpoints(serviceMonitor.spec.endpoints.withPort('ceph-exporter-http-metrics')),
+  monitoring: {
+    rbac: {
+      // Allow creation of monitoring resources
+      rookCephMonitor: {
+        role: role.new('rook-ceph-monitor') +
+          role.withRules([
+            policyRule.withApiGroups('monitoring.coreos.com') +
+            policyRule.withResources('servicemonitors') +
+            policyRule.withVerbs(['get', 'list', 'watch', 'create', 'update', 'delete']),
+          ]),
+        roleBinding: roleBinding.new('rook-ceph-monitor') +
+          roleBinding.bindRole(self.role) +
+          roleBinding.withSubjects(
+            subject.withKind('ServiceAccount') +
+            subject.withName('rook-ceph-system') +
+            subject.withNamespace(namespace)
+          ),
+      },
+      // Allow management of monitoring resources in the mgr
+      rookCephMonitorMgr: {
+        role: role.new('rook-ceph-monitor-mgr') +
+          role.withRules([
+            policyRule.withApiGroups('monitoring.coreos.com') +
+            policyRule.withResources('servicemonitors') +
+            policyRule.withVerbs(['get', 'list', 'create', 'update']),
+          ]),
+        roleBinding: roleBinding.new('rook-ceph-monitor-mgr') +
+          roleBinding.bindRole(self.role) +
+          roleBinding.withSubjects(
+            subject.withKind('ServiceAccount') +
+            subject.withName('rook-ceph-mgr') +
+            subject.withNamespace(namespace)
+          )
+      },
+    },
+    serviceMonitors: {
+      // ServiceMonitors for Prometheus.
+      local serviceMonitor = prometheusLib.monitoring.v1.serviceMonitor,
+      mgrServiceMonitor: serviceMonitor.new('ceph-mgr-servicemonitor')
+        + serviceMonitor.spec.selector.withMatchLabels({app: 'rook-ceph-mgr', rook_cluster: 'rook-ceph'})
+        + serviceMonitor.spec.withEndpoints(
+            serviceMonitor.spec.endpoints.withPort('http-metrics')
+              + serviceMonitor.spec.endpoints.withHonorLabels(true),
+          ),
+      exporterServiceMonitor: serviceMonitor.new('ceph-exporter-servicemonitor')
+        + serviceMonitor.spec.selector.withMatchLabels({app: 'rook-ceph-exporter', rook_cluster: 'rook-ceph'})
+        + serviceMonitor.spec.withEndpoints(serviceMonitor.spec.endpoints.withPort('ceph-exporter-http-metrics')),
+    },
+  },
 };
 
 weebcluster.newTankaEnv(envName, namespace, rookCephEnv)

@@ -15,10 +15,28 @@ local mimirEnv = {
     // _images+:: can go here if needed later; fortunately they actually have it up to date right now.
     _config+:: {
       namespace: namespace,
-      storage_backend: 's3',
-      storage_s3_access_key_id: private.mimir.s3_access_key,
-      storage_s3_secret_access_key: private.mimir.s3_secret_access_key,
-      storage_s3_endpoint: 'minio.minio-yuno',
+
+      local storage_configs = {
+        minio: {
+          storage_backend: 's3',
+          storage_s3_access_key_id: private.mimir.minio.s3_access_key,
+          storage_s3_secret_access_key: private.mimir.minio.s3_secret_access_key,
+          storage_s3_endpoint: 'minio.minio-yuno',
+        },
+        ceph: {
+          storage_backend: 's3',
+          storage_s3_access_key_id: private.mimir.ceph.s3_access_key,
+          storage_s3_secret_access_key: private.mimir.ceph.s3_secret_access_key,
+          storage_s3_endpoint: 'rook-ceph-rgw-objectify-me-daddy.rook-ceph',
+        },
+      },
+
+      local current_storage_config = storage_configs.ceph,
+
+      storage_backend: current_storage_config.storage_backend,
+      storage_s3_access_key_id: current_storage_config.storage_s3_access_key_id,
+      storage_s3_secret_access_key: current_storage_config.storage_s3_secret_access_key,
+      storage_s3_endpoint: current_storage_config.storage_s3_endpoint,
 
       blocks_storage_bucket_name: 'mimir-blocks',
 

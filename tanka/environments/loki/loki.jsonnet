@@ -54,17 +54,42 @@ loki + gateway {
 
     create_service_monitor: true,
 
-    storage_backend: 's3',
-    s3_access_key: private.loki.s3_access_key,
-    s3_secret_access_key: private.loki.s3_secret_access_key,
-    s3_address: 'minio.minio-yuno',
-    s3_bucket_name: 'loki',
-    s3_path_style: true,
+    local storage_configs = {
+      // These are here because I'm switching to a new S3 backend.
+      // Loki does not appear to support multiple S3 backend configs; this makes it easy to swap between the two until I'm ready to decomm MinIO.
+      minio: {
+        using_boltdb_shipper: true,
+        storage_backend: 's3',
+        s3_access_key: private.loki.minio.s3_access_key,
+        s3_secret_access_key: private.loki.minio.s3_secret_access_key,
+        s3_address: 'minio.minio-yuno',
+        s3_bucket_name: 'loki',
+        s3_path_style: true,
+      },
+      ceph: {
+        using_boltdb_shipper: false,
+        storage_backend: 's3',
+        s3_access_key: private.loki.ceph.s3_access_key,
+        s3_secret_access_key: private.loki.ceph.s3_secret_access_key,
+        s3_address: 'rook-ceph-rgw-objectify-me-daddy.rook-ceph',
+        s3_bucket_name: 'loki',
+        s3_path_style: true,
+      },
+    },
 
-    using_boltdb_shipper: true,
-    boltdb_shipper_shared_store: $._config.storage_backend,
+    local current_storage_config = storage_configs.ceph,
+
+    storage_backend: current_storage_config.storage_backend,
+    s3_access_key: current_storage_config.s3_access_key,
+    s3_secret_access_key: current_storage_config.s3_secret_access_key,
+    s3_address: current_storage_config.s3_address,
+    s3_bucket_name: current_storage_config.s3_bucket_name,
+    s3_path_style: current_storage_config.s3_path_style,
+
+    using_boltdb_shipper: current_storage_config.using_boltdb_shipper,
+    boltdb_shipper_shared_store: current_storage_config.storage_backend,
     using_tsdb_shipper: true,
-    tsdb_shipper_shared_store: $._config.storage_backend,
+    tsdb_shipper_shared_store: current_storage_config.storage_backend,
 
     querier_pvc_class: weebcluster.nvme_storage_class,
     ingester_pvc_class: weebcluster.nvme_storage_class,
@@ -75,7 +100,8 @@ loki + gateway {
 
     loki+: {
       schema_config: {
-        configs: [
+        configs: std.filter( function(entry) entry != null, [
+          if current_storage_config.using_boltdb_shipper then
           {
             from: '2023-10-01',
             store: 'boltdb-shipper',
@@ -96,7 +122,7 @@ loki + gateway {
               period: '%dh' % $._config.index_period_hours,
             },
           },
-        ],
+        ]),
       },
     },
 

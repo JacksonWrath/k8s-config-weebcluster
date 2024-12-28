@@ -48,6 +48,8 @@ def check_for_image_updates():
     for app, detail in images.items():
         if date.fromisoformat(detail.get('lastChecked', "1970-01-01")) == date.today():
             continue
+        if detail['image'].startswith('ghcr'):
+            continue
         image = detail['image']
         tag = detail['followTag']
         image_updates = get_image_update(app, image, tag)

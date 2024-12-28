@@ -14,7 +14,7 @@
     },
     grafana: {
       followTag: 'latest',
-      image: 'grafana/grafana:11.3.1',
+      image: 'grafana/grafana:11.4.0',
     },
     graphite_exporter: {
       followTag: 'latest',
@@ -22,7 +22,7 @@
     },
     immich: {
       followTag: 'release',
-      image: 'ghcr.io/immich-app/immich-server:v1.121.0',
+      image: 'ghcr.io/immich-app/immich-server:v1.123.0',
     },
     immichPostgres: {
       followTag: '16-v0.3.0',
@@ -30,7 +30,7 @@
     },
     immichML: {
       followTag: 'release',
-      image: 'ghcr.io/immich-app/immich-machine-learning:v1.121.0',
+      image: 'ghcr.io/immich-app/immich-machine-learning:v1.123.0',
     },
     kube_state_metrics: {
       followTag: '2.12.0',
@@ -51,7 +51,7 @@
     },
     plex: {
       followTag: 'latest',
-      image: 'plexinc/pms-docker:1.41.1.9057-af5eaea7a',
+      image: 'plexinc/pms-docker:1.41.3.9314-a0bfb8370',
     },
     promtail: {
       followTag: 'latest',
@@ -59,15 +59,15 @@
     },
     prowlarr: {
       followTag: 'release',
-      image: 'hotio/prowlarr:release-1.25.4.4818',
+      image: 'hotio/prowlarr:release-1.28.2.4885',
     },
     qbittorrent: {
       followTag: 'release',
-      image: 'hotio/qbittorrent:release-5.0.1',
+      image: 'hotio/qbittorrent:release-5.0.3',
     },
     radarr: {
       followTag: 'release',
-      image: 'hotio/radarr:release-5.14.0.9383',
+      image: 'hotio/radarr:release-5.16.3.9541',
     },
     redis: {
       followTag: '6-alpine',
@@ -75,15 +75,15 @@
     },
     sonarr: {
       followTag: 'release',
-      image: 'hotio/sonarr:release-4.0.10.2544',
+      image: 'hotio/sonarr:release-4.0.11.2680',
     },
     tautulli: {
       followTag: 'latest',
-      image: 'tautulli/tautulli:v2.14.6',
+      image: 'tautulli/tautulli:v2.15.0',
     },
     ubuntu: {
       followTag: 'noble',
-      image: 'ubuntu:noble-20240605',
+      image: 'ubuntu:noble-20241118.1',
     },
     unifiNetworkApplication: {
       followTag: 'latest',

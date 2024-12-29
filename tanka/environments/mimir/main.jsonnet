@@ -12,7 +12,9 @@ local namespace = 'mimir';
 local mimirEnv = {
   namespace: k.core.v1.namespace.new(namespace),
   mimir: mimir {
-    // _images+:: can go here if needed later; fortunately they actually have it up to date right now.
+    _images+:: {
+      mimir: 'grafana/mimir:2.14.2',
+    },
     _config+:: {
       namespace: namespace,
 

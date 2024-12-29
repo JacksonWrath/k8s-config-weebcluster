@@ -55,7 +55,7 @@
     },
     promtail: {
       followTag: 'latest',
-      image: 'grafana/promtail:2.9.4',
+      image: 'grafana/promtail:3.3.0',
     },
     prowlarr: {
       followTag: 'release',

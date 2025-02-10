@@ -161,16 +161,6 @@
     {
       "source": {
         "git": {
-          "remote": "https://github.com/minio/minio.git",
-          "subdir": "docs/metrics/prometheus/grafana"
-        }
-      },
-      "version": "master",
-      "name": "minio-grafana"
-    },
-    {
-      "source": {
-        "git": {
           "remote": "https://github.com/prometheus-operator/prometheus-operator.git",
           "subdir": "jsonnet"
         }

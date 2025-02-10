@@ -95,11 +95,6 @@ config {
         regex: '.*_hash',
       },
       {
-        // MinIO[-operator] labels
-        action: 'labeldrop',
-        regex: 'v1_min_io_console|operator',
-      },
-      {
         // Mimir labels
         action: 'labeldrop',
         regex: 'gossip_ring_member',

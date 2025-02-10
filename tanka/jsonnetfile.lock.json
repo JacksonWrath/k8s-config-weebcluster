@@ -248,17 +248,6 @@
     {
       "source": {
         "git": {
-          "remote": "https://github.com/minio/minio.git",
-          "subdir": "docs/metrics/prometheus/grafana"
-        }
-      },
-      "version": "330dca9a354cdf445d71979170bbe3d27971d127",
-      "sum": "17paHSeQgzwjb2n9BmU9OZN3TgXM46LX9E8MvOpahdQ=",
-      "name": "minio-grafana"
-    },
-    {
-      "source": {
-        "git": {
           "remote": "https://github.com/prometheus-operator/kube-prometheus.git",
           "subdir": "jsonnet/kube-prometheus/lib"
         }

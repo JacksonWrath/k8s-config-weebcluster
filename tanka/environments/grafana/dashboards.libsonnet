@@ -2,5 +2,4 @@
 + (import 'dashboards/ceph.libsonnet')
 + (import 'dashboards/loki.libsonnet')
 + (import 'dashboards/mimir.libsonnet')
-+ (import 'dashboards/minio.libsonnet')
 + (import 'dashboards/truenas.libsonnet')

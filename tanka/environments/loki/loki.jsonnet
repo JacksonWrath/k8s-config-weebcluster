@@ -55,17 +55,9 @@ loki + gateway {
     create_service_monitor: true,
 
     local storage_configs = {
-      // These are here because I'm switching to a new S3 backend.
-      // Loki does not appear to support multiple S3 backend configs; this makes it easy to swap between the two until I'm ready to decomm MinIO.
-      minio: {
-        using_boltdb_shipper: true,
-        storage_backend: 's3',
-        s3_access_key: private.loki.minio.s3_access_key,
-        s3_secret_access_key: private.loki.minio.s3_secret_access_key,
-        s3_address: 'minio.minio-yuno',
-        s3_bucket_name: 'loki',
-        s3_path_style: true,
-      },
+      // These are here for switching to a different S3 backend.
+      // Loki does not appear to support multiple S3 backend configs; this makes it easy to swap between the two when necessary.
+      // (I initially did this when moving off of MinIO)
       ceph: {
         using_boltdb_shipper: false,
         storage_backend: 's3',

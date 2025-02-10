@@ -19,12 +19,6 @@ local mimirEnv = {
       namespace: namespace,
 
       local storage_configs = {
-        minio: {
-          storage_backend: 's3',
-          storage_s3_access_key_id: private.mimir.minio.s3_access_key,
-          storage_s3_secret_access_key: private.mimir.minio.s3_secret_access_key,
-          storage_s3_endpoint: 'minio.minio-yuno',
-        },
         ceph: {
           storage_backend: 's3',
           storage_s3_access_key_id: private.mimir.ceph.s3_access_key,
@@ -82,6 +76,7 @@ local mimirEnv = {
     // Disable auth, basically.
     local no_multitenancy = { 'auth.multitenancy-enabled': false },
     // I don't have Let's Encrypt set up for Minio, so it needs to use HTTP
+    // TODO: I've since moved to Ceph; I need to check if this is needed still nor not
     local insecure_s3 = { 'common.storage.s3.insecure': true },
     // HA config to add to distributor
     local ha_config = {

@@ -54,7 +54,7 @@ local secret = kube.core.v1.secret;
       container.new('tailscale', config.image) +
       container.withEnvMap(baseEnv) +
       container.withEnvFrom(tailscaleSecretEnv) +
-      container.securityContext.capabilities.withAdd('NET_ADMIN'),
+      container.securityContext.withPrivileged(true),
 
     tailscaleDeployment:
       local templateSpec = deployment.spec.template.spec;

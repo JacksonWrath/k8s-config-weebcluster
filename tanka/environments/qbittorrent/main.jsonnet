@@ -61,7 +61,7 @@ local qbittorrentEnvironment = {
 
   // Gluetun container
   local gluetunContainer = container.new('gluetun', weebcluster.images.gluetun.image) +
-    container.securityContext.capabilities.withAdd(['NET_ADMIN']) +
+    container.securityContext.withPrivileged(true) +
      // Setting "restartPolicy: Always" on an initContainer identifies it as a sidecar; beta feature in k8s 1.29
     container.withRestartPolicy("Always") +
     container.withEnvMap({

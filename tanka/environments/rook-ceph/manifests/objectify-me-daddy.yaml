@@ -16,7 +16,7 @@ spec:
     deviceClass: nvme
   gateway:
     port: 80
-    instances: 1
+    instances: 2
     placement:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:

@@ -29,8 +29,8 @@
       image: 'ghcr.io/tensorchord/cloudnative-pgvecto.rs:16.5-v0.3.0',
     },
     kube_state_metrics: {
-      followTag: '2.12.0',
-      image: 'bitnami/kube-state-metrics:2.12.0-debian-12-r10',
+      followTag: 'v2.12.0',
+      image: 'registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.12.0',
     },
     matrix_synapse: {
       followTag: 'latest',

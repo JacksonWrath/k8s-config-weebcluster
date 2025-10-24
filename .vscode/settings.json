@@ -1,3 +1,4 @@
 {
-    "makefile.configureOnOpen": false
+    "makefile.configureOnOpen": false,
+    // "jsonnet.languageServer.pathToBinary": "/Users/daleajackson/Developer/github/jsonnet-language-server/build/dev-jsonnet-lsp"
 }

@@ -30,7 +30,7 @@
     },
     kube_state_metrics: {
       followTag: 'v2.12.0',
-      image: 'registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.12.0',
+      image: 'registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.17.0',
     },
     matrix_synapse: {
       followTag: 'latest',
@@ -38,16 +38,16 @@
     },
     node_exporter: {
       followTag: 'latest',
-      image: 'prom/node-exporter:v1.9.0',
+      image: 'prom/node-exporter:v1.10.2',
     },
     pihole: {
       followTag: 'latest',
       image: 'pihole/pihole:2024.07.0',
-      prepullImage: 'pihole/pihole:2025.02.4',
+      prepullImage: 'pihole/pihole:2025.11.0',
     },
     plex: {
       followTag: 'latest',
-      image: 'plexinc/pms-docker:1.41.4.9463-630c9f557',
+      image: 'plexinc/pms-docker:1.42.2.10156-f737b826c',
     },
     port_updater: {
       followTag: 'latest',
@@ -59,15 +59,15 @@
     },
     prowlarr: {
       followTag: 'release',
-      image: 'hotio/prowlarr:release-1.31.2.4975',
+      image: 'ghcr.io/hotio/prowlarr:release-2.1.5.5216',
     },
     qbittorrent: {
       followTag: 'release',
-      image: 'hotio/qbittorrent:release-5.0.4',
+      image: 'ghcr.io/hotio/qbittorrent:release-5.1.2',
     },
     radarr: {
       followTag: 'release',
-      image: 'hotio/radarr:release-5.18.4.9674',
+      image: 'ghcr.io/hotio/radarr:release-5.28.0.10274',
     },
     redis: {
       followTag: '6-alpine',
@@ -75,19 +75,19 @@
     },
     sonarr: {
       followTag: 'release',
-      image: 'hotio/sonarr:release-4.0.13.2932',
+      image: 'ghcr.io/hotio/sonarr:release-4.0.16.2944',
     },
     tautulli: {
       followTag: 'latest',
-      image: 'tautulli/tautulli:v2.15.1',
+      image: 'tautulli/tautulli:v2.16.0',
     },
     ubuntu: {
       followTag: 'noble',
-      image: 'ubuntu:noble-20241118.1',
+      image: 'ubuntu:noble-20251001',
     },
     unifiNetworkApplication: {
       followTag: 'latest',
-      image: 'linuxserver/unifi-network-application:version-8.6.9',
+      image: 'linuxserver/unifi-network-application:version-v9.5.21',
     },
   },
 }

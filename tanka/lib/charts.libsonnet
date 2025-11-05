@@ -2,7 +2,7 @@
   'cert-manager': {
     name: 'cert-manager',
     repo: 'https://charts.jetstack.io',
-    version: 'v1.16.1',
+    version: 'v1.19.1',
   },
   etcd: {
     name: 'etcd',
@@ -12,12 +12,12 @@
   metallb: {
     name: 'metallb',
     repo: 'https://metallb.github.io/metallb',
-    version: '0.14.8',
+    version: '0.15.2',
   },
   'mongodb-operator': {
     name: 'community-operator',
     repo: 'https://mongodb.github.io/helm-charts',
-    version: '0.11.0',
+    version: '0.13.0',
   },
   gitea: {
     name: 'gitea',
@@ -27,7 +27,7 @@
   'ingress-nginx': {
     name: 'ingress-nginx',
     repo: 'https://kubernetes.github.io/ingress-nginx',
-    version: '4.11.3',
+    version: '4.14.0',
   },
   'rook-ceph': {
     name: 'rook-ceph',

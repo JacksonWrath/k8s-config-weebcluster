@@ -15,7 +15,7 @@ local envName = 'rook-ceph';
 local namespace = 'rook-ceph';
 
 local appConfig = weebcluster.defaultAppConfig + {
-  cephImage: 'quay.io/ceph/ceph:v19.2.0',
+  cephImage: 'quay.io/ceph/ceph:v19.2.3',
 };
 
 local dashboardIngressConfig = appConfig + {

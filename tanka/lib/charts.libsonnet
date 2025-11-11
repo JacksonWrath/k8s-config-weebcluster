@@ -32,6 +32,6 @@
   'rook-ceph': {
     name: 'rook-ceph',
     repo: 'https://charts.rook.io/release',
-    version: 'v1.15.6',
+    version: 'v1.18.6',
   },
 }

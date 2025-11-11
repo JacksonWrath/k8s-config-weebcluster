@@ -6,11 +6,11 @@
     },
     gluetun: {
       followTag: 'v3',
-      image: 'qmcgaw/gluetun:v3.39.1',
+      image: 'qmcgaw/gluetun:v3.40.0',
     },
     grafana: {
       followTag: 'latest',
-      image: 'grafana/grafana:11.5.2',
+      image: 'grafana/grafana:12.2.1',
     },
     graphite_exporter: {
       followTag: 'latest',

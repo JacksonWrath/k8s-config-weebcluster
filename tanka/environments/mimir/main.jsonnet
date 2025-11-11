@@ -13,7 +13,8 @@ local mimirEnv = {
   namespace: k.core.v1.namespace.new(namespace),
   mimir: mimir {
     _images+:: {
-      mimir: 'grafana/mimir:2.14.2',
+      // Upstream config is currently up to date
+      // mimir: 'grafana/mimir:2.14.2',
     },
     _config+:: {
       namespace: namespace,
@@ -80,6 +81,7 @@ local mimirEnv = {
     local insecure_s3 = { 'common.storage.s3.insecure': true },
     // HA config to add to distributor
     local ha_config = {
+      'distributor.ha-tracker.store': 'etcd',
       // The etcd endpoint is hard-coded, expecting the naming from the deprecated operator. Override that.
       'distributor.ha-tracker.etcd.endpoints': 'etcd.%(namespace)s.svc.cluster.local:2379' % namespace,
       // Some of Mimir's and Loki's dashboards use "cluster" to define the compute cluster, not Prometheus, so I've

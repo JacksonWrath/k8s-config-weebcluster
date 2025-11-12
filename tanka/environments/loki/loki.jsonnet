@@ -45,8 +45,10 @@ local serviceMonitorOverrides = {
 
 loki + gateway {
   _images+:: {
-    loki: 'grafana/loki:3.4.2',
-    nginx: 'nginx:1.27.3-alpine',
+    loki: 'grafana/loki:3.5.8',
+    nginx: 'nginx:1.29.3-alpine',
+    memcached: 'memcached:1.6.39-alpine',
+    rollout_operator: 'grafana/rollout-operator:v0.28.1',
   },
   _config+:: {
     namespace: 'loki',

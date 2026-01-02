@@ -28,6 +28,12 @@ spec:
     mon: system-node-critical
     osd: system-node-critical
     mgr: system-cluster-critical
+  resources:
+    osd:
+      limits:
+        memory: "4Gi"
+      requests:
+        memory: "4Gi"
   storage:
     useAllNodes: true
     useAllDevices: true

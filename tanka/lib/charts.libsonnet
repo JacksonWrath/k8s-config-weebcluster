@@ -34,4 +34,9 @@
     repo: 'https://charts.rook.io/release',
     version: 'v1.18.6',
   },
+  'tailscale-operator': {
+    name: 'tailscale-operator',
+    repo: 'https://pkgs.tailscale.com/helmcharts',
+    version: '1.92.5',
+  },
 }

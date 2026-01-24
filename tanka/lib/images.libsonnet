@@ -45,6 +45,10 @@
       image: 'pihole/pihole:2024.07.0',
       prepullImage: 'pihole/pihole:2025.11.0',
     },
+    photoview: {
+      followTag: '2',
+      image: 'photoview/photoview:2',
+    },
     plex: {
       followTag: 'latest',
       image: 'plexinc/pms-docker:1.42.2.10156-f737b826c',

@@ -72,7 +72,7 @@ local persistentVolumeClaim = kube.core.v1.persistentVolumeClaim;
 
   // Generate a Volume object from a PVC
   newVolumeFromPVC(name, persistentVolumeClaim)::
-    volume.withName(name) + 
+    volume.withName(std.asciiLower(name)) + 
     volume.persistentVolumeClaim.withClaimName(persistentVolumeClaim.metadata.name),
 
   // Generate a Volume object that's populated from a Secret
@@ -220,7 +220,7 @@ local persistentVolumeClaim = kube.core.v1.persistentVolumeClaim;
    ***********************/
 
   newNfsPV(name, mountOptions=[], server, path, size)::
-    persistentVolume.new(name) +
+    persistentVolume.new(std.asciiLower(name)) +
       persistentVolume.spec.withStorageClassName('nfs') +
       persistentVolume.spec.withAccessModes('ReadWriteMany') +
       persistentVolume.spec.withMountOptions(mountOptions) +
@@ -229,7 +229,7 @@ local persistentVolumeClaim = kube.core.v1.persistentVolumeClaim;
       persistentVolume.spec.nfs.withPath(path),
     
   newNfsPVCFromPV(name, pv)::
-    persistentVolumeClaim.new(name) +
+    persistentVolumeClaim.new(std.asciiLower(name)) +
       persistentVolumeClaim.spec.withVolumeName(pv.metadata.name) +
       persistentVolumeClaim.spec.withStorageClassName('nfs') +
       persistentVolumeClaim.spec.withAccessModes(['ReadWriteMany']) +

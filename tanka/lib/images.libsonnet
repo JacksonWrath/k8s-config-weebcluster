@@ -4,6 +4,10 @@
       followTag: '17',
       image: 'ghcr.io/cloudnative-pg/postgresql:17.2',
     },
+    filebrowser: {
+      followTag: 'v2',
+      image: 'filebrowser/filebrowser:v2',
+    },
     gluetun: {
       followTag: 'v3',
       image: 'qmcgaw/gluetun:v3.40.0',

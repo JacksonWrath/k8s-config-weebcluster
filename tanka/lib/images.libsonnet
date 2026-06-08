@@ -10,7 +10,7 @@
     },
     gluetun: {
       followTag: 'v3',
-      image: 'qmcgaw/gluetun:v3.40.0',
+      image: 'qmcgaw/gluetun:v3.41.1',
     },
     grafana: {
       followTag: 'latest',
@@ -59,7 +59,7 @@
     },
     port_updater: {
       followTag: 'latest',
-      image: 'ghcr.io/jacksonwrath/gluetun-qbt-port-updater:v1.0.1',
+      image: 'ghcr.io/jacksonwrath/gluetun-qbt-port-updater:v1.0.3',
     },
     promtail: {
       followTag: 'latest',
@@ -71,7 +71,7 @@
     },
     qbittorrent: {
       followTag: 'release',
-      image: 'ghcr.io/hotio/qbittorrent:release-5.1.2',
+      image: 'ghcr.io/hotio/qbittorrent:release-5.2.1',
     },
     radarr: {
       followTag: 'release',

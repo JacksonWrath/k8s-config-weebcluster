@@ -70,6 +70,12 @@ local qbittorrentEnvironment = {
       VPN_PORT_FORWARDING: 'on',
       VPN_PORT_FORWARDING_PROVIDER: 'protonvpn',
       HTTP_CONTROL_SERVER_LOG: 'off',
+      HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE: std.toString(
+        {
+          auth: 'apikey',
+          apikey: private.gluetun.apikey,
+        }
+      ),
     }) +
     container.withVolumeMounts([
       volumeMount.new(self.wireguardSecret.metadata.name, '/gluetun/wireguard'),
@@ -82,6 +88,7 @@ local qbittorrentEnvironment = {
     container.withEnvMap({
       QBT_USERNAME: private.qbittorrent.username,
       QBT_PASSWORD: private.qbittorrent.password,
+      GLUETUN_API_KEY: private.gluetun.apikey,
     }),
 
   qbittorrentApp: weebcluster.newStandardApp(appConfig) {

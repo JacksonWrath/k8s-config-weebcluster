@@ -10,6 +10,17 @@ local homelab = import 'homelab.libsonnet';
   local imageLib = import 'images.libsonnet',
   images: imageLib.images,
 
+  name: 'weebcluster',
+  apiServerUri: 'https://%s.%s:6443' % ['aomine', homelab.defaultDomain],
+  ipv4: {
+    api: '10.1.69.101',
+    aomine: '10.1.69.101',
+    kagami: '10.1.69.102',
+    kuroko: '10.1.69.103',
+    bind9: '10.2.69.10',
+    pihole: '10.2.69.11',
+  },
+
   // Cluster constants
   nvme_storage_class: 'nvme-rook-ceph',
   fs_ephemeral_storage_class: 'fs-ephemeral',
@@ -28,7 +39,7 @@ local homelab = import 'homelab.libsonnet';
 
   // Inline Tanka environment
   newTankaEnv(envName, namespace, data):: 
-    utils.newTankaEnv('https://aomine.' + homelab.defaultDomain + ':6443', envName, namespace, data),
+    utils.newTankaEnv(self, namespace, data),
 
   newStandardApp(appConfig)::
     utils.newStandardApp(weebcluster.defaultAppConfig + appConfig),

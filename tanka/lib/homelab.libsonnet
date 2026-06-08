@@ -27,6 +27,14 @@
       totalSize: '58Ti',
     },
   },
+  k8s: {
+    clusters: [
+      self.weebcluster,
+      self.miniweeb,
+    ],
+    weebcluster: import 'weebcluster.libsonnet',
+    miniweeb: import 'miniweeb.libsonnet',
+  },
   defaultDomain: 'waifus.dev',
   additionalDomains: [
     // Additional domains here will be added to most ingresses

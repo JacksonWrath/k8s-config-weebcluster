@@ -3,6 +3,7 @@ local kube = import 'k.libsonnet';
 
 // API object aliases
 local container = kube.core.v1.container;
+local pvc = kube.core.v1.persistentVolumeClaim;
 local podTemplateSpec = kube.apps.v1.deployment.spec.template.spec;
 
 local envName = 'radarr';
@@ -22,6 +23,11 @@ local radarrEnvironment = {
   mediaVol: weebcluster.newNfsVolumeNolock(appConfig.appName, 'media'),
 
   radarrApp: weebcluster.newStandardApp(appConfig) {
+    configVolume+: {
+      configPVC+: pvc.metadata.withLabelsMixin({
+          'backup.restic.io/enabled': 'true',
+        }),
+    },
     local envMap = {PUID: '1000', PGID: '1000'},
     container+::
       container.withEnvMap(envMap) +

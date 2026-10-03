@@ -19,6 +19,11 @@
     repo: 'https://mongodb.github.io/helm-charts',
     version: '0.13.0',
   },
+  'csi-driver-nfs': {
+    name: 'csi-driver-nfs',
+    repo: 'https://kubernetes-csi.github.io/csi-driver-nfs',
+    version: '4.13.4',
+  },
   gitea: {
     name: 'gitea',
     repo: 'https://dl.gitea.com/charts',

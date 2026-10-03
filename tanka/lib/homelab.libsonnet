@@ -4,7 +4,7 @@
   local homelab = self,
   nfs: {
     local nfs = self,
-    local shares = ['media', 'YoRHa', 'LongTerm', 'immich'],
+    local shares = ['media', 'YoRHa', 'LongTerm', 'immich', 'backups'],
     generate_shares(poolPath):: {
       [share]: poolPath + '/' + share
       for share in shares
@@ -27,9 +27,25 @@
       totalSize: '58Ti',
     },
   },
+  activeClusterName: 'weebcluster',
+  activeCluster: homelab.k8s[homelab.activeClusterName],
+
+  k8s: {
+    clusters: [
+      self.weebcluster,
+      self.miniweeb,
+    ],
+    weebcluster: import 'weebcluster-actual.libsonnet',
+    miniweeb: import 'miniweeb.libsonnet',
+  },
   defaultDomain: 'waifus.dev',
   additionalDomains: [
     // Additional domains here will be added to most ingresses
   ],
-  allDomains: [self.defaultDomain] + self.additionalDomains,
+  allDomains:
+    [self.defaultDomain]
+    + self.additionalDomains
+    + (if self.activeCluster.domain != self.defaultDomain
+       then [self.activeCluster.domain]
+       else []),
 }

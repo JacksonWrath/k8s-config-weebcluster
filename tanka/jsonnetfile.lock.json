@@ -14,6 +14,16 @@
     {
       "source": {
         "git": {
+          "remote": "ssh://git@github.com/JacksonWrath/restic-k8s-backup.git",
+          "subdir": "jsonnet"
+        }
+      },
+      "version": "7dce7054266ea62f988df40c9acbe4643c98d5eb",
+      "sum": "tn3WoZH5ziY3Mj8A/PbZmIP1vcR5zhVmvaVRpJHrP+I="
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/Supporterino/truenas-graphite-to-prometheus.git",
           "subdir": ""
         }
@@ -232,6 +242,16 @@
       },
       "version": "291653b2c17d03e855e7e00ce0e4ec25502b2ce2",
       "sum": "4tm0gDcs75JxElwyAM88mM2onZjB+H2UBgGvPfH6u9c="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/jsonnet-libs/k8s-libsonnet.git",
+          "subdir": "1.35"
+        }
+      },
+      "version": "ee5c4c5ee02571eaf82f1170c60af47eee5496be",
+      "sum": "B+1kudlxnkbH6warwOHHh+gmADl2w5VFJQ5D0SxcO6M="
     },
     {
       "source": {

@@ -7,6 +7,7 @@ local k = import 'k.libsonnet';
 // API object aliases
 local podTemplateSpec = k.apps.v1.deployment.spec.template.spec;
 local container = k.core.v1.container;
+local pvc = k.core.v1.persistentVolumeClaim;
 local volume = k.core.v1.volume;
 local volumeMount = k.core.v1.volumeMount;
 
@@ -92,6 +93,11 @@ local qbittorrentEnvironment = {
     }),
 
   qbittorrentApp: weebcluster.newStandardApp(appConfig) {
+    configVolume+: {
+      configPVC+: pvc.metadata.withLabelsMixin({
+          'backup.restic.io/enabled': 'true',
+        }),
+    },
     local envMap = {PUID: '1000', PGID: '1000'},
     container+::
       container.withEnvMap(envMap) +

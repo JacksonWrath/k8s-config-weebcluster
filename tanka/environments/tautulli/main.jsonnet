@@ -1,4 +1,6 @@
 local weebcluster = import 'weebcluster.libsonnet';
+local kube = import 'k.libsonnet';
+local pvc = kube.core.v1.persistentVolumeClaim;
 
 local envName = 'tautulli';
 local namespace = 'plex';
@@ -12,7 +14,13 @@ local appConfig = {
 };
 
 local tautulliEnvironment = {
-  tautulliApp: weebcluster.newStandardApp(appConfig),
+  tautulliApp: weebcluster.newStandardApp(appConfig) {
+    configVolume+: {
+      configPVC+: pvc.metadata.withLabelsMixin({
+          'backup.restic.io/enabled': 'true',
+        }),
+    },
+  },
 };
 
 weebcluster.newTankaEnv(envName, namespace, tautulliEnvironment)

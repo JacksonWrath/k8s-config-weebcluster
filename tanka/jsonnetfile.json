@@ -177,6 +177,15 @@
       },
       "version": "master",
       "name": "rfmoz-grafana-dashboards"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "ssh://git@github.com/JacksonWrath/restic-k8s-backup.git",
+          "subdir": "jsonnet"
+        }
+      },
+      "version": "design-simplification"
     }
   ],
   "legacyImports": true

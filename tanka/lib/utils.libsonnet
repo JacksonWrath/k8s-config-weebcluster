@@ -238,14 +238,14 @@ local persistentVolumeClaim = kube.core.v1.persistentVolumeClaim;
   // Other utilities
 
   // Inline Tanka environment
-  newTankaEnv(apiServer, envName, namespace, data):: {
+  newTankaEnv(envName, cluster, namespace, data):: {
     apiVersion: 'tanka.dev/v1alpha1',
     kind: 'Environment',
     metadata: {
       name: envName,
     },
     spec: {
-      apiServer: apiServer,
+      apiServer: cluster.apiServerUri,
       namespace: namespace,
       injectLabels: true, // This allows running 'tk prune' to clean up removed resources.
       applyStrategy: 'server',

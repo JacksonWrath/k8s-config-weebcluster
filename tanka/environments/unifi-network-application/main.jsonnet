@@ -8,6 +8,7 @@ local mongodb = import 'mongodb.libsonnet';
 local service = k.core.v1.service;
 local container = k.core.v1.container;
 local containerPort = k.core.v1.containerPort;
+local pvc = k.core.v1.persistentVolumeClaim;
 
 // Environment definitions
 local envName = 'unifiNetworkApplication';
@@ -69,7 +70,11 @@ local unifiNetworkApplicationEnv = {
   local firstRunSecretName = dbUsername + '-password',
   firstRunSecret: k.core.v1.secret.new(firstRunSecretName, utils.stringDataEncode(private.unifi.secretStringData)),
 
-  configVolume: utils.newConfigVolume(appConfig.configVolSize, weebcluster.defaultStorageClass, labels),
+  configVolume: utils.newConfigVolume(appConfig.configVolSize, weebcluster.defaultStorageClass, labels) {
+    configPVC+: pvc.metadata.withLabelsMixin({
+        'backup.restic.io/enabled': 'true',
+      }),
+  },
   systemProperties: {
     local configMapData = {'system.properties': importstr 'system.properties'},
     configMap: k.core.v1.configMap.new('system-properties', configMapData),

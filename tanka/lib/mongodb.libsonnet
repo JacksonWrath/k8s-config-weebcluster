@@ -52,6 +52,28 @@ local resourceRule = k.authorization.v1.resourceRule;
           scramCredentialsSecretName: 'my-scram',
         },
       ],
+      statefulSet: {
+        spec: {
+          volumeClaimTemplates: [
+            {
+              metadata: {
+                name: 'data-volume',
+                labels: {
+                  'backup.restic.io/enabled': 'true',
+                },
+              },
+            },
+            {
+              metadata: {
+                name: 'logs-volume',
+                labels: {
+                  'backup.restic.io/enabled': 'true',
+                },
+              },
+            },
+          ],
+        },
+      },
       additionalMongodConfig: {
         'storage.wiredTiger.engineConfig.journalCompressor': 'zlib',
       },

@@ -5,6 +5,7 @@ local utils = import 'utils.libsonnet';
 
 // API object aliases
 local container = kube.core.v1.container;
+local pvc = kube.core.v1.persistentVolumeClaim;
 local volumeMount = kube.core.v1.volumeMount;
 local podTemplateSpec = kube.apps.v1.deployment.spec.template.spec;
 
@@ -45,6 +46,11 @@ local plexEnvironment = {
     ]),
 
   plexApp: weebcluster.newStandardApp(appConfig) {
+    configVolume+: {
+      configPVC+: pvc.metadata.withLabelsMixin({
+          'backup.restic.io/enabled': 'true',
+        }),
+    },
     container+:: container.withVolumeMountsMixin([
       volumeMount.new('plex-transcode', '/transcode'),
       volumeMount.new('plex-media', '/media/plex'),

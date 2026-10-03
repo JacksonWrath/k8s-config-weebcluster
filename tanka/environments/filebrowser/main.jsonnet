@@ -5,6 +5,7 @@ local weebcluster = import 'weebcluster.libsonnet';
 // API object aliases
 local container = kube.core.v1.container;
 local podTemplateSpec = kube.apps.v1.deployment.spec.template.spec;
+local pvc = kube.core.v1.persistentVolumeClaim;
 
 local envName = 'filebrowser';
 local namespace = 'filebrowser';
@@ -28,6 +29,12 @@ local filebrowserEnvironment = {
     local envMap = {
       FB_DATABASE: '/config/filebrowser.db',
       FB_ROOT: '/data',
+    },
+
+    configVolume+: {
+      configPVC+: pvc.metadata.withLabelsMixin({
+          'backup.restic.io/enabled': 'true',
+        }),
     },
 
     container+::

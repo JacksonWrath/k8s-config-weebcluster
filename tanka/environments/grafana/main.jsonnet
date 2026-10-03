@@ -63,7 +63,7 @@ local grafanaEnv = {
 
   grafanaApp: grafana
     + grafana.withImage(weebcluster.images.grafana.image)
-    + grafana.withRootUrl('https://%s.%s' % [appConfig.subdomain, homelab.defaultDomain])
+    + grafana.withRootUrl('https://%s.%s' % [appConfig.subdomain, homelab.activeCluster.domain])
     + grafana.withGrafanaIniConfig(iniConfig)
     + grafana.withTheme('dark')
     // Datasources

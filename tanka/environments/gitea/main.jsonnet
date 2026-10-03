@@ -5,7 +5,7 @@ local helm = import 'k3s-helm.libsonnet';
 
 local envName = 'gitea';
 local namespace = 'gitea';
-local hostname = 'kise' + '.' + homelab.defaultDomain;
+local hostname = 'kise' + '.' + homelab.activeCluster.domain;
 
 local valuesStr = std.strReplace(importstr 'values.yaml', 'HOSTNAME_REPLACE_KEY', hostname);
 local values = std.parseYaml(valuesStr);

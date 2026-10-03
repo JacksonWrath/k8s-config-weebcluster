@@ -21,9 +21,20 @@ weebcluster.newTankaEnv(envName, namespace, {
     },
   }),
 
+  forwardingOptimizedProxyClass:
+    tailscale.v1alpha1.proxyClass.new('forwarding-optimized') +
+    tailscale.v1alpha1.proxyClass.withTailscaleContainer({
+      env: [{
+        name: 'TS_EXPERIMENTAL_ENABLE_FORWARDING_OPTIMIZATIONS',
+        value: 'true',
+      }],
+      resources: {},
+    }),
+
   connector:
     tailscale.v1alpha1.connector.new('weebcluster-connector', 'weebcluster-subnet-connector') +
     tailscale.v1alpha1.connector.withTags(['tag:weebcluster-subnet-connector']) +
     tailscale.v1alpha1.connector.withRoutes(['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16']) +
+    tailscale.v1alpha1.connector.withProxyClass('forwarding-optimized') +
     tailscale.v1alpha1.connector.withExitNode(true),
 })

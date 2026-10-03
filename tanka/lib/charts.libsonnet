@@ -42,6 +42,6 @@
   'tailscale-operator': {
     name: 'tailscale-operator',
     repo: 'https://pkgs.tailscale.com/helmcharts',
-    version: '1.92.5',
+    version: '1.102.4',
   },
 }

@@ -55,7 +55,7 @@
     },
     plex: {
       followTag: 'latest',
-      image: 'plexinc/pms-docker:1.42.2.10156-f737b826c',
+      image: 'plexinc/pms-docker:1.43.4.10903-e5521bd8c',
     },
     port_updater: {
       followTag: 'latest',
@@ -87,7 +87,7 @@
     },
     tautulli: {
       followTag: 'latest',
-      image: 'tautulli/tautulli:v2.16.0',
+      image: 'tautulli/tautulli:v2.18.2',
     },
     ubuntu: {
       followTag: 'noble',
